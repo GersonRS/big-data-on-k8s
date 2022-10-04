@@ -1,0 +1,33 @@
+[submodule "repository/helm-charts/airflow"]
+	path = repository/helm-charts/airflow
+	url = git@github.com:apache/airflow.git
+[submodule "repository/helm-charts/cp-helm-charts"]
+	path = repository/helm-charts/cp-helm-charts
+	url = git@github.com:confluentinc/cp-helm-charts.git
+[submodule "repository/helm-charts/helm-charts"]
+	path = repository/helm-charts/helm-charts
+	url = git@github.com:elastic/helm-charts.git
+[submodule "repository/helm-charts/cost-analyzer-helm-chart"]
+	path = repository/helm-charts/cost-analyzer-helm-chart
+	url = git@github.com:kubecost/cost-analyzer-helm-chart.git
+[submodule "repository/helm-charts/operator"]
+	path = repository/helm-charts/operator
+	url = git@github.com:minio/operator.git
+[submodule "repository/helm-charts/minio"]
+	path = repository/helm-charts/minio
+	url = git@github.com:minio/minio.git
+[submodule "repository/helm-charts/charts"]
+	path = repository/helm-charts/charts
+	url = git@github.com:bitnami/charts.git
+[submodule "repository/helm-charts/pinot"]
+	path = repository/helm-charts/pinot
+	url = git@github.com:apache/pinot.git
+[submodule "repository/helm-charts/prometheus"]
+	path = repository/helm-charts/prometheus
+	url = git@github.com:prometheus-community/helm-charts.git
+[submodule "repository/helm-charts/trino"]
+	path = repository/helm-charts/trino
+	url = git@github.com:valeriano-manassero/helm-charts.git
+[submodule "repository/helm-charts/yugabyte"]
+	path = repository/helm-charts/yugabyte
+	url = git@github.com:yugabyte/charts.git
