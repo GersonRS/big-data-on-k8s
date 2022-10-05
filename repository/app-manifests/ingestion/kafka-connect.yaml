@@ -8,7 +8,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: 'git@github.com:GersonRS/big-data-on-k8s.git'
+    repoURL: 'https://github.com/GersonRS/big-data-on-k8s'
     path: repository/yamls/ingestion/kafka-connect/
     targetRevision: HEAD
     directory:
