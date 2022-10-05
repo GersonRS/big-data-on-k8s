@@ -8,12 +8,12 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: 'git@github.com:GersonRS/big-data-on-k8s.git'
-    path: repository/helm-charts/cp-helm-charts/charts/cp-schema-registry
+    repoURL: 'https://bitbucket.org/owshq/trn-mst-bg-k8s.git'
+    path: repository/helm-charts/cp-schema-registry
     targetRevision: HEAD
     helm:
       valueFiles:
-        - values-development.yaml
+        - values.yaml
   destination:
     server: 'https://kubernetes.default.svc'
     namespace: ingestion
