@@ -8,7 +8,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: 'git@github.com:GersonRS/big-data-on-k8s.git'
+    repoURL: 'https://bitbucket.org/owshq/trn-mst-bg-k8s.git'
     path: repository/helm-charts/prometheus-alertmanager-grafana
     targetRevision: HEAD
     helm:
