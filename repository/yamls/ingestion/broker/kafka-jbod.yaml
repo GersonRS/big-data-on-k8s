@@ -47,7 +47,7 @@ spec:
       - id: 0
         type: persistent-claim
         size: 20Gi
-        class: openebs-jiva-csi-default
+        class: openebs-hostpath
         deleteClaim: false
     # resource limitation
     # -xms -xmx set as same as resources [limit]
