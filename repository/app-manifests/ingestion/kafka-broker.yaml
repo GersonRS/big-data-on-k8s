@@ -4,7 +4,7 @@ metadata:
   # app name
   name: kafka-broker
   # deployed yaml
-  namespace: cicd
+  namespace: argocd
 spec:
   project: default
   source:
