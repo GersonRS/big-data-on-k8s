@@ -47,6 +47,7 @@ spec:
       - id: 0
         type: persistent-claim
         size: 20Gi
+        class: longhorn
         deleteClaim: false
     # resource limitation
     # -xms -xmx set as same as resources [limit]
