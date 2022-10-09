@@ -1,0 +1,23 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  # app name
+  name: kafka-broker-ephemeral
+  # deployed yaml
+  namespace: cicd
+spec:
+  project: default
+  source:
+    repoURL: 'https://github.com/GersonRS/big-data-on-k8s'
+    path: repository/yamls/ingestion/broker-ephemeral/
+    targetRevision: HEAD
+    directory:
+      recurse: true
+      jsonnet: {}
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: ingestion
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
