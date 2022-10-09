@@ -11,7 +11,7 @@ spec:
     # broker version
     version: 3.0.0
     # initial replicas
-    replicas: 3
+    replicas: 2
     # provision lbs
     listeners:
       - name: plain
@@ -33,10 +33,10 @@ spec:
       initialDelaySeconds: 15
       timeoutSeconds: 5
     config:
-      default.replication.factor: 3
+      default.replication.factor: 2
       num.partitions: 15
-      offsets.topic.replication.factor: 3
-      transaction.state.log.replication.factor: 3
+      offsets.topic.replication.factor: 2
+      transaction.state.log.replication.factor: 2
       transaction.state.log.min.isr: 1
       log.message.format.version: "3.0"
       inter.broker.protocol.version: "3.0"
@@ -69,7 +69,7 @@ spec:
           key: kafka-metrics-config.yml
   # zookeeper information
   zookeeper:
-    replicas: 3
+    replicas: 2
     storage:
         type: persistent-claim
         size: 10Gi
