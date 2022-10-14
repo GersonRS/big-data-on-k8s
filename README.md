@@ -1,14 +1,16 @@
 # BIG DATA ON K8S 
 # big-data-on-k8s
 
-secret argocd = 6Sja9NhKS-bXKZ0R
-ARGOMINIKUBE="Sw2yf3RC5xaUSCZ3"
-HOSTARGO="localhost:34367"
-argocd login $HOSTARGO --username admin --password $ARGOMINIKUBE --insecure
+secret longhorn = 6Sja9NhKSAbXKZ0R
+secret argocd microk8s = pXkyT7YN2A5ifCHu
+secret argocd minikube = Sw2yf3RC5xaUSCZ3
+PASSWORD="pXkyT7YN2A5ifCHu"
+HOSTARGO="192.168.0.200"
+argocd login $HOSTARGO --username admin --password $PASSWORD --insecure
 
 # register cluster
-CLUSTER="microk8s"
 CLUSTER="minikube"
+CLUSTER="microk8s"
 argocd cluster add $CLUSTER --in-cluster
 
 REPOSITORY="https://github.com/GersonRS/big-data-on-k8s.git"
