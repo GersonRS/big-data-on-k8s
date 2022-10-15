@@ -4,7 +4,7 @@ metadata:
   name: edh
 spec:
   kafka:
-    version: 3.2.3
+    version: 3.2.0
     replicas: 2
     listeners:
       - name: plain
