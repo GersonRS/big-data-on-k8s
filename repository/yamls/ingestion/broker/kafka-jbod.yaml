@@ -10,7 +10,7 @@ metadata:
 spec:
   kafka:
     # broker version
-    version: 3.2.3
+    version: 3.0.0
     # initial replicas
     replicas: 2
     # provision lbs
