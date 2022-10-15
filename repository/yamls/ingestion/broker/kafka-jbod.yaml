@@ -43,10 +43,12 @@ spec:
       min.insync.replicas: 1
       inter.broker.protocol.version: "3.0"
     storage:
-      type: persistent-claim
-      size: 10Gi
-      class: longhorn
-      deleteClaim: false
+      type: jbod
+      volumes:
+      - id: 0
+        type: persistent-claim
+        size: 20Gi
+        deleteClaim: false
     # resource limitation
     # -xms -xmx set as same as resources [limit]
     resources:
@@ -68,7 +70,6 @@ spec:
     storage:
         type: persistent-claim
         size: 10Gi
-        class: longhorn
         deleteClaim: false
     resources:
       # requests and limits
