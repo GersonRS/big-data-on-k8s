@@ -32,6 +32,12 @@ spec:
         memory: 1Gi
         cpu: "500m"  
   zookeeper:
+    livenessProbe:
+      initialDelaySeconds: 60
+      timeoutSeconds: 5
+    readinessProbe:
+      initialDelaySeconds: 60
+      timeoutSeconds: 5
     replicas: 1
     storage:
       type: ephemeral
