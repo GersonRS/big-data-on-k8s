@@ -1,432 +1,266 @@
 {{/* vim: set filetype=mustache: */}}
-{{/*
-Expand the name of the chart.
-*/}}
-{{- define "mongodb.name" -}}
-{{- include "common.names.name" . -}}
-{{- end -}}
 
 {{/*
-Create a default fully qualified app name.
-We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
-If release name contains chart name it will be used as a full name.
+Returns a ServiceAccount name for specified path or falls back to `common.serviceAccount.name`
+if `common.serviceAccount.create` is set to true. Falls back to Chart's fullname otherwise.
+Usage:
+{{ include "mongodb-sharded.serviceAccountName" (dict "value" .Values.path.to.serviceAccount "context" $) }}
 */}}
-{{- define "mongodb.fullname" -}}
-{{- include "common.names.fullname" . -}}
-{{- end -}}
-
-{{/*
-Create a default mongo service name which can be overridden.
-*/}}
-{{- define "mongodb.service.nameOverride" -}}
-    {{- if and .Values.service .Values.service.nameOverride -}}
-        {{- print .Values.service.nameOverride -}}
-    {{- else -}}
-        {{- printf "%s-headless" (include "mongodb.fullname" .) -}}
-    {{- end }}
+{{- define "mongodb-sharded.serviceAccountName" -}}
+{{- if .value.create }}
+    {{- default (include "common.names.fullname" .context) .value.name | quote }}
+{{- else if .context.Values.common.serviceAccount.create }}
+    {{- default (include "common.names.fullname" .context) .context.Values.common.serviceAccount.name | quote }}
+{{- else -}}
+    {{- default "default" .value.name | quote }}
+{{- end }}
 {{- end }}
 
 {{/*
-Create a default mongo arbiter service name which can be overridden.
+Renders a ServiceAccount for specified name.
+Usage:
+{{ include "mongodb-sharded.serviceaccount" (dict "value" .Values.path.to.serviceAccount "context" $) }}
 */}}
-{{- define "mongodb.arbiter.service.nameOverride" -}}
-    {{- if and .Values.arbiter.service .Values.arbiter.service.nameOverride -}}
-        {{- print .Values.arbiter.service.nameOverride -}}
+{{- define "mongodb-sharded.serviceaccount" -}}
+{{- if .value.create -}}
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: {{ include "mongodb-sharded.serviceAccountName" (dict "value" .value "context" .context) }}
+  labels:
+    {{- include "common.labels.standard" .context | nindent 4 }}
+---
+{{ end -}}
+{{- end -}}
+
+{{- define "mongodb-sharded.secret" -}}
+  {{- if .Values.existingSecret -}}
+    {{- .Values.existingSecret -}}
+  {{- else }}
+    {{- include "common.names.fullname" . -}}
+  {{- end }}
+{{- end -}}
+
+{{- define "mongodb-sharded.configServer.primaryHost" -}}
+  {{- if .Values.configsvr.external.host -}}
+  {{- .Values.configsvr.external.host }}
+  {{- else -}}
+  {{- printf "%s-configsvr-0.%s-headless.%s.svc.%s" (include "common.names.fullname" . ) (include "common.names.fullname" .) .Release.Namespace .Values.clusterDomain -}}
+  {{- end -}}
+{{- end -}}
+
+{{- define "mongodb-sharded.configServer.rsName" -}}
+  {{- if .Values.configsvr.external.replicasetName -}}
+    {{- .Values.configsvr.external.replicasetName }}
+  {{- else }}
+    {{- printf "%s-configsvr" ( include "common.names.fullname" . ) -}}
+  {{- end }}
+{{- end -}}
+
+{{- define "mongodb-sharded.mongos.configCM" -}}
+  {{- if .Values.mongos.configCM -}}
+    {{- .Values.mongos.configCM -}}
+  {{- else }}
+    {{- printf "%s-mongos" (include "common.names.fullname" .) -}}
+  {{- end }}
+{{- end -}}
+
+{{- define "mongodb-sharded.shardsvr.dataNode.configCM" -}}
+  {{- if .Values.shardsvr.dataNode.configCM -}}
+    {{- .Values.shardsvr.dataNode.configCM -}}
+  {{- else }}
+    {{- printf "%s-shardsvr-data" (include "common.names.fullname" .) -}}
+  {{- end }}
+{{- end -}}
+
+{{- define "mongodb-sharded.shardsvr.arbiter.configCM" -}}
+  {{- if .Values.shardsvr.arbiter.configCM -}}
+    {{- .Values.shardsvr.arbiter.configCM -}}
+  {{- else }}
+    {{- printf "%s-shardsvr-arbiter" (include "common.names.fullname" .) -}}
+  {{- end }}
+{{- end -}}
+
+{{- define "mongodb-sharded.configsvr.configCM" -}}
+  {{- if .Values.configsvr.configCM -}}
+    {{- .Values.configsvr.configCM -}}
+  {{- else }}
+    {{- printf "%s-configsvr" (include "common.names.fullname" .) -}}
+  {{- end }}
+{{- end -}}
+
+{{/*
+Get the initialization scripts Secret name.
+*/}}
+{{- define "mongodb-sharded.initScriptsSecret" -}}
+  {{- printf "%s" (include "common.tplvalues.render" (dict "value" .Values.common.initScriptsSecret "context" $)) -}}
+{{- end -}}
+
+{{/*
+Get the initialization scripts configmap name.
+*/}}
+{{- define "mongodb-sharded.initScriptsCM" -}}
+  {{- printf "%s" (include "common.tplvalues.render" (dict "value" .Values.common.initScriptsCM "context" $)) -}}
+{{- end -}}
+
+{{/*
+Create the name for the admin secret.
+*/}}
+{{- define "mongodb-sharded.adminSecret" -}}
+    {{- if .Values.auth.existingAdminSecret -}}
+        {{- .Values.auth.existingAdminSecret -}}
     {{- else -}}
-        {{- printf "%s-arbiter-headless" (include "mongodb.fullname" .) -}}
-    {{- end }}
-{{- end }}
+        {{- include "common.names.fullname" . -}}-admin
+    {{- end -}}
+{{- end -}}
+
+{{/*
+Create the name for the key secret.
+*/}}
+{{- define "mongodb-sharded.keySecret" -}}
+  {{- if .Values.auth.existingKeySecret -}}
+      {{- .Values.auth.existingKeySecret -}}
+  {{- else -}}
+      {{- include "common.names.fullname" . -}}-keyfile
+  {{- end -}}
+{{- end -}}
+
+{{/*
+Returns the proper Service name depending if an explicit service name is set
+in the values file. If the name is not explicitly set it will take the "common.names.fullname"
+*/}}
+{{- define "mongodb-sharded.serviceName" -}}
+  {{- if .Values.service.name -}}
+    {{ .Values.service.name }}
+  {{- else -}}
+    {{ include "common.names.fullname" .}}
+  {{- end -}}
+{{- end -}}
 
 {{/*
 Return the proper MongoDB&reg; image name
 */}}
-{{- define "mongodb.image" -}}
-{{- include "common.images.image" (dict "imageRoot" .Values.image "global" .Values.global) -}}
+{{- define "mongodb-sharded.image" -}}
+{{ include "common.images.image" (dict "imageRoot" .Values.image "global" .Values.global) }}
 {{- end -}}
 
 {{/*
 Return the proper image name (for the metrics image)
 */}}
-{{- define "mongodb.metrics.image" -}}
-{{- include "common.images.image" (dict "imageRoot" .Values.metrics.image "global" .Values.global) -}}
+{{- define "mongodb-sharded.metrics.image" -}}
+{{ include "common.images.image" (dict "imageRoot" .Values.metrics.image "global" .Values.global) }}
 {{- end -}}
 
 {{/*
 Return the proper image name (for the init container volume-permissions image)
 */}}
-{{- define "mongodb.volumePermissions.image" -}}
-{{- include "common.images.image" (dict "imageRoot" .Values.volumePermissions.image "global" .Values.global) -}}
-{{- end -}}
-
-{{/*
-Return the proper image name (for the init container auto-discovery image)
-*/}}
-{{- define "mongodb.externalAccess.autoDiscovery.image" -}}
-{{- include "common.images.image" (dict "imageRoot" .Values.externalAccess.autoDiscovery.image "global" .Values.global) -}}
-{{- end -}}
-
-{{/*
-Return the proper image name (for the TLS Certs image)
-*/}}
-{{- define "mongodb.tls.image" -}}
-{{- include "common.images.image" (dict "imageRoot" .Values.tls.image "global" .Values.global) -}}
+{{- define "mongodb-sharded.volumePermissions.image" -}}
+{{ include "common.images.image" (dict "imageRoot" .Values.volumePermissions.image "global" .Values.global) }}
 {{- end -}}
 
 {{/*
 Return the proper Docker Image Registry Secret Names
 */}}
-{{- define "mongodb.imagePullSecrets" -}}
-{{- include "common.images.pullSecrets" (dict "images" (list .Values.image .Values.metrics.image .Values.volumePermissions.image .Values.tls.image) "global" .Values.global) -}}
-{{- end -}}
-
-{{/*
-Allow the release namespace to be overridden for multi-namespace deployments in combined charts.
-*/}}
-{{- define "mongodb.namespace" -}}
-    {{- if and .Values.global .Values.global.namespaceOverride -}}
-        {{- print .Values.global.namespaceOverride -}}
-    {{- else -}}
-        {{- print .Release.Namespace -}}
-    {{- end }}
-{{- end -}}
-{{- define "mongodb.serviceMonitor.namespace" -}}
-    {{- if .Values.metrics.serviceMonitor.namespace -}}
-        {{- print .Values.metrics.serviceMonitor.namespace -}}
-    {{- else -}}
-        {{- include "mongodb.namespace" . -}}
-    {{- end }}
-{{- end -}}
-{{- define "mongodb.prometheusRule.namespace" -}}
-    {{- if .Values.metrics.prometheusRule.namespace -}}
-        {{- print .Values.metrics.prometheusRule.namespace -}}
-    {{- else -}}
-        {{- include "mongodb.namespace" . -}}
-    {{- end }}
-{{- end -}}
-
-{{/*
-Returns the proper service account name depending if an explicit service account name is set
-in the values file. If the name is not set it will default to either mongodb.fullname if serviceAccount.create
-is true or default otherwise.
-*/}}
-{{- define "mongodb.serviceAccountName" -}}
-    {{- if .Values.serviceAccount.create -}}
-        {{- default (include "mongodb.fullname" .) (print .Values.serviceAccount.name) -}}
-    {{- else -}}
-        {{- default "default" (print .Values.serviceAccount.name) -}}
-    {{- end -}}
-{{- end -}}
-
-{{/*
-Return the list of custom users to create during the initialization (string format)
-*/}}
-{{- define "mongodb.customUsers" -}}
-    {{- $customUsers := list -}}
-    {{- if .Values.auth.username -}}
-        {{- $customUsers = append $customUsers .Values.auth.username }}
-    {{- end }}
-    {{- range .Values.auth.usernames }}
-        {{- $customUsers = append $customUsers . }}
-    {{- end }}
-    {{- printf "%s" (default "" (join "," $customUsers)) -}}
-{{- end -}}
-
-{{/*
-Return the list of passwords for the custom users (string format)
-*/}}
-{{- define "mongodb.customPasswords" -}}
-    {{- $customPasswords := list -}}
-    {{- if .Values.auth.password -}}
-        {{- $customPasswords = append $customPasswords .Values.auth.password }}
-    {{- end }}
-    {{- range .Values.auth.passwords }}
-        {{- $customPasswords = append $customPasswords . }}
-    {{- end }}
-    {{- printf "%s" (default "" (join "," $customPasswords)) -}}
-{{- end -}}
-
-{{/*
-Return the list of custom databases to create during the initialization (string format)
-*/}}
-{{- define "mongodb.customDatabases" -}}
-    {{- $customDatabases := list -}}
-    {{- if .Values.auth.database -}}
-        {{- $customDatabases = append $customDatabases .Values.auth.database }}
-    {{- end }}
-    {{- range .Values.auth.databases }}
-        {{- $customDatabases = append $customDatabases . }}
-    {{- end }}
-    {{- printf "%s" (default "" (join "," $customDatabases)) -}}
-{{- end -}}
-
-{{/*
-Return the configmap with the MongoDB&reg; configuration
-*/}}
-{{- define "mongodb.configmapName" -}}
-{{- if .Values.existingConfigmap -}}
-    {{- printf "%s" (tpl .Values.existingConfigmap $) -}}
-{{- else -}}
-    {{- printf "%s" (include "mongodb.fullname" .) -}}
-{{- end -}}
-{{- end -}}
-
-{{/*
-Return true if a configmap object should be created for MongoDB&reg;
-*/}}
-{{- define "mongodb.createConfigmap" -}}
-{{- if and .Values.configuration (not .Values.existingConfigmap) }}
-    {{- true -}}
-{{- else -}}
-{{- end -}}
-{{- end -}}
-
-{{/*
-Return the secret with MongoDB&reg; credentials
-*/}}
-{{- define "mongodb.secretName" -}}
-    {{- if .Values.auth.existingSecret -}}
-        {{- printf "%s" (tpl .Values.auth.existingSecret $) -}}
-    {{- else -}}
-        {{- printf "%s" (include "mongodb.fullname" .) -}}
-    {{- end -}}
-{{- end -}}
-
-{{/*
-Return true if a secret object should be created for MongoDB&reg;
-*/}}
-{{- define "mongodb.createSecret" -}}
-{{- if and .Values.auth.enabled (not .Values.auth.existingSecret) }}
-    {{- true -}}
-{{- else -}}
-{{- end -}}
-{{- end -}}
-
-{{/*
-Get the initialization scripts ConfigMap name.
-*/}}
-{{- define "mongodb.initdbScriptsCM" -}}
-{{- if .Values.initdbScriptsConfigMap -}}
-{{- printf "%s" .Values.initdbScriptsConfigMap -}}
-{{- else -}}
-{{- printf "%s-init-scripts" (include "mongodb.fullname" .) -}}
-{{- end -}}
-{{- end -}}
-
-{{/*
-Return true if the Arbiter should be deployed
-*/}}
-{{- define "mongodb.arbiter.enabled" -}}
-{{- if and (eq .Values.architecture "replicaset") .Values.arbiter.enabled }}
-    {{- true -}}
-{{- else -}}
-{{- end -}}
-{{- end -}}
-
-{{/*
-Return the configmap with the MongoDB&reg; configuration for the Arbiter
-*/}}
-{{- define "mongodb.arbiter.configmapName" -}}
-{{- if .Values.arbiter.existingConfigmap -}}
-    {{- printf "%s" (tpl .Values.arbiter.existingConfigmap $) -}}
-{{- else -}}
-    {{- printf "%s-arbiter" (include "mongodb.fullname" .) -}}
-{{- end -}}
-{{- end -}}
-
-{{/*
-Return true if a configmap object should be created for MongoDB&reg; Arbiter
-*/}}
-{{- define "mongodb.arbiter.createConfigmap" -}}
-{{- if and (eq .Values.architecture "replicaset") .Values.arbiter.enabled .Values.arbiter.configuration (not .Values.arbiter.existingConfigmap) }}
-    {{- true -}}
-{{- else -}}
-{{- end -}}
-{{- end -}}
-
-{{/*
-Return true if the Hidden should be deployed
-*/}}
-{{- define "mongodb.hidden.enabled" -}}
-{{- if and (eq .Values.architecture "replicaset") .Values.hidden.enabled }}
-    {{- true -}}
-{{- end -}}
-{{- end -}}
-
-{{/*
-Return the configmap with the MongoDB&reg; configuration for the Hidden
-*/}}
-{{- define "mongodb.hidden.configmapName" -}}
-{{- if .Values.hidden.existingConfigmap -}}
-    {{- printf "%s" (tpl .Values.hidden.existingConfigmap $) -}}
-{{- else -}}
-    {{- printf "%s-hidden" (include "mongodb.fullname" .) -}}
-{{- end -}}
-{{- end -}}
-
-{{/*
-Return true if a configmap object should be created for MongoDB&reg; Hidden
-*/}}
-{{- define "mongodb.hidden.createConfigmap" -}}
-{{- if and  (include "mongodb.hidden.enabled" .) .Values.hidden.enabled .Values.hidden.configuration (not .Values.hidden.existingConfigmap) }}
-    {{- true -}}
-{{- end -}}
+{{- define "mongodb-sharded.imagePullSecrets" -}}
+{{- include "common.images.pullSecrets" (dict "images" (list .Values.image .Values.metrics.image .Values.volumePermissions.image) "global" .Values.global) -}}
 {{- end -}}
 
 {{/*
 Compile all warnings into a single message, and call fail.
 */}}
-{{- define "mongodb.validateValues" -}}
-{{- $messages := list -}}
-{{- $messages := append $messages (include "mongodb.validateValues.pspAndRBAC" .) -}}
-{{- $messages := append $messages (include "mongodb.validateValues.architecture" .) -}}
-{{- $messages := append $messages (include "mongodb.validateValues.customUsersDBs" .) -}}
-{{- $messages := append $messages (include "mongodb.validateValues.customUsersDBsLength" .) -}}
-{{- $messages := append $messages (include "mongodb.validateValues.externalAccessServiceType" .) -}}
-{{- $messages := append $messages (include "mongodb.validateValues.loadBalancerIPsListLength" .) -}}
-{{- $messages := append $messages (include "mongodb.validateValues.nodePortListLength" .) -}}
-{{- $messages := append $messages (include "mongodb.validateValues.externalAccessAutoDiscoveryRBAC" .) -}}
-{{- $messages := without $messages "" -}}
-{{- $message := join "\n" $messages -}}
+{{- define "mongodb-sharded.validateValues" -}}
+  {{- $messages := list -}}
+  {{- $messages := append $messages (include "mongodb-sharded.validateValues.mongodbCustomDatabase" .) -}}
+  {{- $messages := append $messages (include "mongodb-sharded.validateValues.externalCfgServer" .) -}}
+  {{- $messages := append $messages (include "mongodb-sharded.validateValues.replicas" .) -}}
+  {{- $messages := append $messages (include "mongodb-sharded.validateValues.config" .) -}}
+  {{- $messages := without $messages "" -}}
+  {{- $message := join "\n" $messages -}}
 
-{{- if $message -}}
-{{-   printf "\nVALUES VALIDATION:\n%s" $message | fail -}}
-{{- end -}}
-{{- end -}}
-
-{{/* Validate RBAC is created when using PSP */}}
-{{- define "mongodb.validateValues.pspAndRBAC" -}}
-{{- if and (.Values.podSecurityPolicy.create) (not .Values.rbac.create) -}}
-mongodb: podSecurityPolicy.create, rbac.create
-    Both podSecurityPolicy.create and rbac.create must be true, if you want
-    to create podSecurityPolicy
-{{- end -}}
-{{- end -}}
-
-{{/* Validate values of MongoDB&reg; - must provide a valid architecture */}}
-{{- define "mongodb.validateValues.architecture" -}}
-{{- if and (ne .Values.architecture "standalone") (ne .Values.architecture "replicaset") -}}
-mongodb: architecture
-    Invalid architecture selected. Valid values are "standalone" and
-    "replicaset". Please set a valid architecture (--set mongodb.architecture="xxxx")
-{{- end -}}
+  {{- if $message -}}
+    {{- printf "\nVALUES VALIDATION:\n%s" $message | fail -}}
+  {{- end -}}
 {{- end -}}
 
 {{/*
-Validate values of MongoDB&reg; - both auth.usernames and auth.databases are necessary
+Validate values of MongoDB&reg; - both mongodbUsername and mongodbDatabase are necessary
 to create a custom user and database during 1st initialization
 */}}
-{{- define "mongodb.validateValues.customUsersDBs" -}}
-{{- $customUsers := include "mongodb.customUsers" . -}}
-{{- $customDatabases := include "mongodb.customDatabases" . -}}
-{{- if or (and (empty $customUsers) (not (empty $customDatabases))) (and (not (empty $customUsers)) (empty $customDatabases)) }}
-mongodb: auth.usernames, auth.databases
-    Both auth.usernames and auth.databases must be provided to create
-    custom users and databases during 1st initialization.
-    Please set both of them (--set auth.usernames[0]="xxxx",auth.databases[0]="yyyy")
+{{- define "mongodb-sharded.validateValues.mongodbCustomDatabase" -}}
+{{- if or (and .Values.mongodbUsername (not .Values.mongodbDatabase)) (and (not .Values.mongodbUsername) .Values.mongodbDatabase) }}
+mongodb: mongodbUsername, mongodbDatabase
+    Both mongodbUsername and mongodbDatabase must be provided to create
+    a custom user and database during 1st initialization.
+    Please set both of them (--set mongodbUsername="xxxx",mongodbDatabase="yyyy")
 {{- end -}}
 {{- end -}}
 
 {{/*
-Validate values of MongoDB&reg; - both auth.usernames and auth.databases arrays should have the same length
-to create a custom user and database during 1st initialization
+Validate values of MongoDB&reg; - If using an external config server, then both the host and the replicaset name should be set.
 */}}
-{{- define "mongodb.validateValues.customUsersDBsLength" -}}
-{{- if ne (len .Values.auth.usernames) (len .Values.auth.databases) }}
-mongodb: auth.usernames, auth.databases
-    Both auth.usernames and auth.databases arrays should have the same length
+{{- define "mongodb-sharded.validateValues.externalCfgServer" -}}
+{{- if and .Values.configsvr.external.replicasetName (not .Values.configsvr.external.host) -}}
+mongodb: invalidExternalConfigServer
+    You specified a replica set name for the external config server but not a host. Set both configsvr.external.replicasetName and configsvr.external.host
+{{- end -}}
+{{- if and (not .Values.configsvr.external.replicasetName) .Values.configsvr.external.host -}}
+mongodb: invalidExternalConfigServer
+    You specified a host for the external config server but not the replica set name. Set both configsvr.external.replicasetName and configsvr.external.host
+{{- end -}}
+{{- if and .Values.configsvr.external.host (not .Values.configsvr.external.rootPassword) -}}
+mongodb: invalidExternalConfigServer
+    You specified a host for the external config server but not the root password. Set the configsvr.external.rootPassword value.
+{{- end -}}
+{{- if and .Values.configsvr.external.host (not .Values.configsvr.external.replicasetKey) -}}
+mongodb: invalidExternalConfigServer
+    You specified a host for the external config server but not the replica set key. Set the configsvr.external.replicasetKey value.
 {{- end -}}
 {{- end -}}
 
 {{/*
-Validate values of MongoDB&reg; - service type for external access
+Validate values of MongoDB&reg; - The number of shards must be positive, as well as the data node replicas
 */}}
-{{- define "mongodb.validateValues.externalAccessServiceType" -}}
-{{- if and (eq .Values.architecture "replicaset") (not (eq .Values.externalAccess.service.type "NodePort")) (not (eq .Values.externalAccess.service.type "LoadBalancer")) (not (eq .Values.externalAccess.service.type "ClusterIP")) -}}
-mongodb: externalAccess.service.type
-    Available service type for external access are NodePort, LoadBalancer or ClusterIP.
+{{- define "mongodb-sharded.validateValues.replicas" -}}
+{{- if and (le (int .Values.shardsvr.dataNode.replicas) 0) (ge (int .Values.shards) 1) }}
+mongodb: invalidShardSvrReplicas
+    You specified an invalid number of replicas per shard. Please set shardsvr.dataNode.replicas with a positive number or set the number of shards to 0.
+{{- end -}}
+{{- if lt (int .Values.shardsvr.arbiter.replicas) 0 }}
+mongodb: invalidShardSvrArbiters
+    You specified an invalid number of arbiters per shard. Please set shardsvr.arbiter.replicas with a number greater or equal than 0
+{{- end -}}
+{{- if and (le (int .Values.configsvr.replicas) 0) (not .Values.configsvr.external.host) }}
+mongodb: invalidConfigSvrReplicas
+    You specified an invalid number of replicas per shard. Please set configsvr.replicas with a positive number or set the configsvr.external.host value to use
+    an external config server replicaset
 {{- end -}}
 {{- end -}}
 
 {{/*
-Validate values of MongoDB&reg; - number of replicas must be the same than LoadBalancer IPs list
+Validate values of MongoDB&reg; - Cannot use both .config and .configCM
 */}}
-{{- define "mongodb.validateValues.loadBalancerIPsListLength" -}}
-{{- $replicaCount := int .Values.replicaCount }}
-{{- $loadBalancerListLength := len .Values.externalAccess.service.loadBalancerIPs }}
-{{- if and (eq .Values.architecture "replicaset") .Values.externalAccess.enabled (not .Values.externalAccess.autoDiscovery.enabled ) (eq .Values.externalAccess.service.type "LoadBalancer") (not (eq $replicaCount $loadBalancerListLength )) -}}
-mongodb: .Values.externalAccess.service.loadBalancerIPs
-    Number of replicas and loadBalancerIPs array length must be the same.
+{{- define "mongodb-sharded.validateValues.config" -}}
+{{- if and .Values.shardsvr.dataNode.configCM .Values.shardsvr.dataNode.config }}
+mongodb: shardDataNodeConflictingConfig
+    You specified both shardsvr.dataNode.configCM and shardsvr.dataNode.config. You can only set one
+{{- end -}}
+{{- if and .Values.shardsvr.arbiter.configCM .Values.shardsvr.arbiter.config }}
+mongodb: arbiterNodeConflictingConfig
+    You specified both shardsvr.arbiter.configCM and shardsvr.arbiter.config. You can only set one
+{{- end -}}
+{{- if and .Values.mongos.configCM .Values.mongos.config }}
+mongodb: mongosNodeConflictingConfig
+    You specified both mongos.configCM and mongos.config. You can only set one
+{{- end -}}
+{{- if and .Values.configsvr.configCM .Values.configsvr.config }}
+mongodb: configSvrNodeConflictingConfig
+    You specified both configsvr.configCM and configsvr.config. You can only set one
 {{- end -}}
 {{- end -}}
 
-{{/*
-Validate values of MongoDB&reg; - number of replicas must be the same than NodePort list
-*/}}
-{{- define "mongodb.validateValues.nodePortListLength" -}}
-{{- $replicaCount := int .Values.replicaCount }}
-{{- $nodePortListLength := len .Values.externalAccess.service.nodePorts }}
-{{- if and (eq .Values.architecture "replicaset") .Values.externalAccess.enabled (eq .Values.externalAccess.service.type "NodePort") (not (eq $replicaCount $nodePortListLength )) -}}
-mongodb: .Values.externalAccess.service.nodePorts
-    Number of replicas and nodePorts array length must be the same.
-{{- end -}}
-{{- end -}}
-
-{{/*
-Validate values of MongoDB&reg; - RBAC should be enabled when autoDiscovery is enabled
-*/}}
-{{- define "mongodb.validateValues.externalAccessAutoDiscoveryRBAC" -}}
-{{- if and (eq .Values.architecture "replicaset") .Values.externalAccess.enabled .Values.externalAccess.autoDiscovery.enabled (not .Values.rbac.create ) }}
-mongodb: rbac.create
-    By specifying "externalAccess.enabled=true" and "externalAccess.autoDiscovery.enabled=true"
-    an initContainer will be used to autodetect the external IPs/ports by querying the
-    K8s API. Please note this initContainer requires specific RBAC resources. You can create them
-    by specifying "--set rbac.create=true".
-{{- end -}}
-{{- end -}}
-
-{{/*
-Validate values of MongoDB&reg; exporter URI string - auth.enabled and/or tls.enabled must be enabled or it defaults
-*/}}
-{{- define "mongodb.mongodb_exporter.uri" -}}
-    {{- $uriTlsArgs := ternary "tls=true&tlsCertificateKeyFile=/certs/mongodb.pem&tlsCAFile=/certs/mongodb-ca-cert" "" .Values.tls.enabled -}}
-    {{- if .Values.metrics.username }}
-        {{- $uriAuth := ternary "$(echo $MONGODB_METRICS_USERNAME | sed -r \"s/@/%40/g;s/:/%3A/g\"):$(echo $MONGODB_METRICS_PASSWORD | sed -r \"s/@/%40/g;s/:/%3A/g\")@" "" .Values.auth.enabled -}}
-        {{- printf "mongodb://%slocalhost:27017/admin?%s" $uriAuth $uriTlsArgs -}}
-    {{- else -}}
-        {{- $uriAuth := ternary "$MONGODB_ROOT_USER:$(echo $MONGODB_ROOT_PASSWORD | sed -r \"s/@/%40/g;s/:/%3A/g\")@" "" .Values.auth.enabled -}}
-        {{- printf "mongodb://%slocalhost:27017/admin?%s" $uriAuth $uriTlsArgs -}}
-    {{- end -}}
-{{- end -}}
-
-
-{{/*
-Return the appropriate apiGroup for PodSecurityPolicy.
-*/}}
-{{- define "podSecurityPolicy.apiGroup" -}}
-{{- if semverCompare ">=1.14-0" .Capabilities.KubeVersion.GitVersion -}}
-{{- print "policy" -}}
-{{- else -}}
-{{- print "extensions" -}}
-{{- end -}}
-{{- end -}}
-
-{{/*
-Return true if a TLS secret object should be created
-*/}}
-{{- define "mongodb.createTlsSecret" -}}
-{{- if and .Values.tls.enabled (not .Values.tls.existingSecret) }}
-    {{- true -}}
-{{- end -}}
-{{- end -}}
-
-{{/*
-Return the secret containing MongoDB&reg; TLS certificates
-*/}}
-{{- define "mongodb.tlsSecretName" -}}
-{{- $secretName := .Values.tls.existingSecret -}}
-{{- if $secretName -}}
-    {{- printf "%s" (tpl $secretName $) -}}
-{{- else -}}
-    {{- printf "%s-ca" (include "mongodb.fullname" .) -}}
-{{- end -}}
+{{/* Check if there are rolling tags in the images */}}
+{{- define "mongodb-sharded.checkRollingTags" -}}
+{{- include "common.warnings.rollingTag" .Values.image }}
+{{- include "common.warnings.rollingTag" .Values.metrics.image }}
+{{- include "common.warnings.rollingTag" .Values.volumePermissions.image }}
 {{- end -}}

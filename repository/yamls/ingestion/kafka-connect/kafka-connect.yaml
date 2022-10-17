@@ -8,10 +8,10 @@ metadata:
   labels:
     app: edh
 spec:
-  version: 3.0.0
+  version: 3.2.3
   replicas: 1
   bootstrapServers: edh-kafka-bootstrap:9093
-  image: mateushenrique/owshq-kafka-connect-strimzi:3.0.0
+  image: mateushenrique/owshq-kafka-connect-strimzi:3.2.3
   # imagePullPolicy: Always
   tls:
     trustedCertificates:
@@ -48,10 +48,10 @@ spec:
     #config.providers.file.class: org.apache.kafka.common.config.provider.FileConfigProvider
   resources:
     requests:
-        memory: 2Gi
+        memory: 1Gi
         cpu: 500m
     limits:
-        memory: 3Gi
+        memory: 2Gi
         cpu: 1000m
   metricsConfig:
     type: jmxPrometheusExporter

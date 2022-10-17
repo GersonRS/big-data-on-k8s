@@ -1,4 +1,3 @@
-{{- if .Values.service.enabled -}}
 ---
 kind: Service
 apiVersion: v1
@@ -24,7 +23,6 @@ spec:
     release: {{ .Release.Name | quote }}
     chart: "{{ .Chart.Name }}"
     app: "{{ template "elasticsearch.uname" . }}"
-  publishNotReadyAddresses: {{ .Values.service.publishNotReadyAddresses }}
   ports:
   - name: {{ .Values.service.httpPortName | default "http" }}
     protocol: TCP
@@ -41,10 +39,6 @@ spec:
 {{- with .Values.service.loadBalancerSourceRanges }}
   loadBalancerSourceRanges:
 {{ toYaml . | indent 4 }}
-{{- end }}
-{{- if .Values.service.externalTrafficPolicy }}
-  externalTrafficPolicy: {{ .Values.service.externalTrafficPolicy }}
-{{- end }}
 {{- end }}
 ---
 kind: Service
