@@ -1,12 +1,12 @@
 serviceEndpoints:
   - name: "yb-master-service"
-    type: NodePort
+    type: LoadBalancer
     app: "yb-master"
     ports:
       ui: "7000"
 
   - name: "yb-tserver-service"
-    type: NodePort
+    type: LoadBalancer
     app: "yb-tserver"
     ports:
       yql-port: "9042"
