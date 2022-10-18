@@ -404,7 +404,7 @@ preflight:
 
   ## Set to true to skip ulimit verification
   ## SkipAll has higher priority
-  skipUlimit: false
+  skipUlimit: true
 
 ## Pod securityContext
 ## Ref: https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/pod-v1/#security-context
