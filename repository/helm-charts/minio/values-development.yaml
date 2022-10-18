@@ -95,14 +95,14 @@ bucketRoot: ""
 # Number of drives attached to a node
 drivesPerNode: 1
 # Number of MinIO containers running
-replicas: 4
+replicas: 2
 # Number of expanded MinIO clusters
 pools: 1
 
 # Deploy if 'mode == gateway' - 4 replicas.
 gateway:
   type: "nas" # currently only "nas,gcs" are supported.
-  replicas: 4
+  replicas: 2
   gcs:
     serviceAccountFile: "" # credential JSON file of service account key (not required if using existing secret)
     projectId: "" # Google cloud project id required
@@ -142,10 +142,10 @@ persistence:
   ##
   ## Storage class of PV to bind. By default it looks for standard storage class.
   ## If the PV uses a different storage class, specify that here.
-  storageClass: "default"
+  storageClass: ""
   VolumeName: ""
   accessMode: ReadWriteOnce
-  size: 500Gi
+  size: 100Gi
 
   ## If subPath is set mount a sub folder of a volume instead of the root of the volume.
   ## This is especially handy for volume plugins that don't natively support sub mounting (like glusterfs).
