@@ -44,8 +44,10 @@ spec:
 {{ toYaml .Values.podLabels | indent 8 }}
 {{- end }}
       annotations:
+{{- if not .Values.ignoreChartChecksums }}
         checksum/secrets: {{ include (print $.Template.BasePath "/secrets.yaml") . | sha256sum }}
         checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+{{- end }}
 {{- if .Values.podAnnotations }}
 {{ toYaml .Values.podAnnotations | trimSuffix "\n" | indent 8 }}
 {{- end }}
@@ -72,9 +74,6 @@ spec:
             {{- if eq .Values.gateway.type "nas" }}
             - "/usr/bin/docker-entrypoint.sh minio gateway nas {{ $bucketRoot }} -S {{ .Values.certsPath }} --address :{{ .Values.minioAPIPort }} --console-address :{{ .Values.minioConsolePort }} {{- template "minio.extraArgs" . }} "
             {{- end }}
-            {{- if eq .Values.gateway.type "gcs" }}
-            - "/usr/bin/docker-entrypoint.sh minio gateway gcs {{ .Values.gateway.gcs.projectId }} -S {{ .Values.certsPath }} --address :{{ .Values.minioAPIPort }} --console-address :{{ .Values.minioConsolePort }} {{- template "minio.extraArgs" . }} "
-            {{- end }}
           volumeMounts:
             - name: minio-user
               mountPath: "/tmp/credentials"
@@ -85,6 +84,10 @@ spec:
               {{- if .Values.persistence.subPath }}
               subPath: "{{ .Values.persistence.subPath }}"
               {{- end }}
+            {{- end }}
+            {{- if .Values.extraSecret }}
+            - name: extra-secret
+              mountPath: "/tmp/minio-config-env"
             {{- end }}
             {{- include "minio.tlsKeysVolumeMount" . | indent 12 }}
           ports:
@@ -103,10 +106,10 @@ spec:
                 secretKeyRef:
                   name: {{ template "minio.secretName" . }}
                   key: rootPassword
-            {{- if eq .Values.gateway.type "gcs" }}
-            - name: GOOGLE_APPLICATION_CREDENTIALS
-              value: "/tmp/credentials/service-account-file.json"
-            {{- end }}
+            {{- if .Values.extraSecret }}
+            - name: MINIO_CONFIG_ENV_FILE
+              value: "/tmp/minio-config-env/config.env"
+            {{- end}}
             {{- if .Values.metrics.serviceMonitor.public }}
             - name: MINIO_PROMETHEUS_AUTH_TYPE
               value: "public"
@@ -161,5 +164,10 @@ spec:
         - name: minio-user
           secret:
             secretName: {{ template "minio.secretName" . }}
+        {{- if .Values.extraSecret }}
+        - name: extra-secret
+          secret:
+            secretName: {{ .Values.extraSecret }}
+        {{- end }}
         {{- include "minio.tlsKeysVolume" . | indent 8 }}
 {{- end }}

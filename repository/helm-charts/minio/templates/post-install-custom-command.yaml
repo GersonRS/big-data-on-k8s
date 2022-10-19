@@ -1,18 +1,18 @@
-{{- if .Values.buckets }}
+{{- if .Values.customCommands }}
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: {{ template "minio.fullname" . }}-make-bucket-job
+  name: {{ template "minio.fullname" . }}-custom-command-job
   namespace: {{ .Release.Namespace | quote }}
   labels:
-    app: {{ template "minio.name" . }}-make-bucket-job
+    app: {{ template "minio.name" . }}-custom-command-job
     chart: {{ template "minio.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
   annotations:
     "helm.sh/hook": post-install,post-upgrade
     "helm.sh/hook-delete-policy": hook-succeeded,before-hook-creation
-{{- with .Values.makeBucketJob.annotations }}
+{{- with .Values.customCommandJob.annotations }}
 {{ toYaml . | indent 4 }}
 {{- end }}
 spec:
@@ -24,30 +24,30 @@ spec:
 {{- if .Values.podLabels }}
 {{ toYaml .Values.podLabels | indent 8 }}
 {{- end }}
-{{- if .Values.makeBucketJob.podAnnotations }}
+{{- if .Values.customCommandJob.podAnnotations }}
       annotations:
-{{ toYaml .Values.makeBucketJob.podAnnotations | indent 8 }}
+{{ toYaml .Values.customCommandJob.podAnnotations | indent 8 }}
 {{- end }}
     spec:
       restartPolicy: OnFailure
 {{- include "minio.imagePullSecrets" . | indent 6 }}
 {{- if .Values.nodeSelector }}
       nodeSelector:
-{{ toYaml .Values.makeBucketJob.nodeSelector | indent 8 }}
+{{ toYaml .Values.customCommandJob.nodeSelector | indent 8 }}
 {{- end }}
-{{- with .Values.makeBucketJob.affinity }}
+{{- with .Values.customCommandJob.affinity }}
       affinity:
 {{ toYaml . | indent 8 }}
 {{- end }}
-{{- with .Values.makeBucketJob.tolerations }}
+{{- with .Values.customCommandJob.tolerations }}
       tolerations:
 {{ toYaml . | indent 8 }}
 {{- end }}
-{{- if .Values.makeBucketJob.securityContext.enabled }}
+{{- if .Values.customCommandJob.securityContext.enabled }}
       securityContext:
-        runAsUser: {{ .Values.makeBucketJob.securityContext.runAsUser }}
-        runAsGroup: {{ .Values.makeBucketJob.securityContext.runAsGroup }}
-        fsGroup: {{ .Values.makeBucketJob.securityContext.fsGroup }}
+        runAsUser: {{ .Values.customCommandJob.securityContext.runAsUser }}
+        runAsGroup: {{ .Values.customCommandJob.securityContext.runAsGroup }}
+        fsGroup: {{ .Values.customCommandJob.securityContext.fsGroup }}
 {{- end }}
       volumes:
         - name: minio-configuration
@@ -65,21 +65,15 @@ spec:
             - key: {{ .Values.tls.publicCrt }}
               path: CAs/public.crt
         {{ end }}
-        {{- if .Values.makeBucketJob.extraVolumes }}
-          {{- toYaml .Values.makeBucketJob.extraVolumes | nindent 8 }}
-        {{- end }}
-{{ if .Values.serviceAccount.create }}
-      serviceAccountName: {{ .Values.serviceAccount.name }}
-{{- end }}
       containers:
       - name: minio-mc
         image: "{{ .Values.mcImage.repository }}:{{ .Values.mcImage.tag }}"
         imagePullPolicy: {{ .Values.mcImage.pullPolicy }}
-        {{- if .Values.makeBucketJob.exitCommand }}
+        {{- if .Values.customCommandJob.exitCommand }}
         command: ["/bin/sh", "-c"]
-        args: ["/bin/sh /config/initialize; x=$(echo $?); {{ .Values.makeBucketJob.exitCommand }} && exit $x" ]
+        args: ["/bin/sh /config/custom-command; x=$(echo $?); {{ .Values.customCommandJob.exitCommand }} && exit $x" ]
         {{- else }}
-        command: ["/bin/sh", "/config/initialize"]
+        command: ["/bin/sh", "/config/custom-command"]
         {{- end }}
         env:
           - name: MINIO_ENDPOINT
@@ -93,9 +87,6 @@ spec:
           - name: cert-secret-volume-mc
             mountPath: {{ .Values.configPathmc }}certs
           {{ end }}
-          {{- if .Values.makeBucketJob.extraVolumeMounts }}
-            {{- toYaml .Values.makeBucketJob.extraVolumeMounts | nindent 10 }}
-          {{- end }}
         resources:
-{{ toYaml .Values.makeBucketJob.resources | indent 10 }}
+{{ toYaml .Values.customCommandJob.resources | indent 10 }}
 {{- end }}
