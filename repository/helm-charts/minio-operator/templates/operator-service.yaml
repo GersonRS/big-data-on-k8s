@@ -9,6 +9,7 @@ spec:
   type: ClusterIP
   ports:
     - port: 4222
-      name: http
+      name: https
   selector:
+    operator: leader
     {{- include "minio-operator.selectorLabels" . | nindent 4 }}
