@@ -1,3 +1,4 @@
+
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
@@ -7,18 +8,18 @@ metadata:
   namespace: cicd
 spec:
   destination:
-    name: in-cluster
+    name: microk8s
     namespace: monitoring
   project: default
   source:
-    repoURL: 'git@github.com:GersonRS/big-data-on-k8s.git'
-    path: repository/helm-charts/kube-prometheus-stack
-    targetRevision: HEAD
+    repoURL: 'https://prometheus-community.github.io/helm-charts'
+    targetRevision: 41.5.1
     helm:
       skipCrds: true
       values: |-
         grafana:
-          adminPassword: 12345678
+          adminPassword: um9AdU9UGwCVDt48ke0hb3DXwdaWrqctZttXLvJl
+    chart: kube-prometheus-stack
   syncPolicy:
     automated:
       prune: true
