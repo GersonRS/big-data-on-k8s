@@ -1,10 +1,38 @@
+```bash
+sudo nano /etc/systemd/logind.conf
+```
+```
+HandleLidSwitch=ignore
+HandleLidSwitchExternalPower=ignore
+HandleLidSwitchDocked=ignore
+```
+```bash
+sudo systemctl restart systemd-logind.service
+
+sudo nano /etc/default/grub
+```
+GRUB_CMDLINE_LINUX="consoleblank=300"
+```
+sudo update-grub
+
+sudo dpkg-reconfigure console-setup
+
+sudo apt install wicd wicd-curses
+wicd-curses
+
+sudo apt install network-manager
+sudo apt install cockpit
+nmtui
+```
+cockpit port:9090
+
+kubectl patch storageclass mayastor -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"true"}}}'
+
 # BIG DATA ON K8S 
 # big-data-on-k8s
-
-secret longhorn = 6Sja9NhKSAbXKZ0R
-secret argocd microk8s = pXkyT7YN2A5ifCHu
+secret argocd microk8s = cVkyRNbkuU4dXxa6
 secret argocd minikube = Sw2yf3RC5xaUSCZ3
-PASSWORD="pXkyT7YN2A5ifCHu"
+PASSWORD="cVkyRNbkuU4dXxa6"
 HOSTARGO="192.168.0.200"
 argocd login $HOSTARGO --username admin --password $PASSWORD --insecure
 
@@ -12,9 +40,7 @@ argocd login $HOSTARGO --username admin --password $PASSWORD --insecure
 CLUSTER="minikube"
 CLUSTER="microk8s"
 argocd cluster add $CLUSTER --in-cluster
-
-REPOSITORY="https://github.com/GersonRS/big-data-on-k8s.git"
-argocd repo add $REPOSITORY --username GersonRS --password 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 --port-forward
-
-argocd repo add git@github.com:GersonRS/big-data-on-k8s.git --ssh-private-key-path ~/.ssh/id_ed25519
 argocd repo add git@github.com:GersonRS/big-data-on-k8s.git --ssh-private-key-path ~/.ssh/id_ed25519 --insecure-skip-server-verification
+
+<!-- REPOSITORY="https://github.com/GersonRS/big-data-on-k8s.git"
+argocd repo add $REPOSITORY --username GersonRS --password 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 --port-forward -->
