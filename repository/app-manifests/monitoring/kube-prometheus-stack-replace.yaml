@@ -1,0 +1,25 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: kube-prometheus-stack-crds
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+  namespace: cicd
+spec:
+  destination:
+    name: in-cluster
+    namespace: monitoring
+  project: default
+  source:
+    repoURL: 'git@github.com:GersonRS/big-data-on-k8s.git'
+    path: repository/helm-charts/kube-prometheus-stack/crds/
+    targetRevision: HEAD
+    directory:
+      recurse: true
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+      - Replace=true
+    automated:
+      prune: true
+      selfHeal: true
