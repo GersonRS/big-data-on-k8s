@@ -1,0 +1,23 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  # app name
+  name: kube-prometheus-stack
+  # deployed yaml
+  namespace: cicd
+spec:
+  project: default
+  source:
+    repoURL: 'git@github.com:GersonRS/big-data-on-k8s.git'
+    path: repository/helm-charts/kube-prometheus-stack
+    targetRevision: HEAD
+    helm:
+      valueFiles:
+        - values.yaml
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: monitoring
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
