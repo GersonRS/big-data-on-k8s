@@ -1,1 +1,0 @@
-helm upgrade --install banco postgresql --values values.yaml
