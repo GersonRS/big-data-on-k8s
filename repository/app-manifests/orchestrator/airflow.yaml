@@ -1,11 +1,14 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  # app name
   name: airflow
-  # deployed yaml
+  annotations:
+    argocd.argoproj.io/sync-wave: "3"
   namespace: cicd
 spec:
+  destination:
+    name: microk8s
+    namespace: orchestrator
   project: default
   source:
     repoURL: 'https://airflow.apache.org/'
@@ -19,8 +22,8 @@ spec:
           useHelmHooks: false
         data:
           metadataConnection:
-            user: admin
-            pass: Q1NQZRd1GO
+            user: gerson
+            pass: '12345678'
             protocol: postgresql
             host: postgres-postgresql.database.svc.cluster.local
             port: 5432
@@ -29,9 +32,6 @@ spec:
         postgresql:
           enabled: false
     chart: airflow
-  destination:
-    server: 'https://kubernetes.default.svc'
-    namespace: orchestrator
   syncPolicy:
     automated:
       prune: true

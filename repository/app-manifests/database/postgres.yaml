@@ -14,17 +14,16 @@ spec:
     repoURL: 'https://charts.bitnami.com/bitnami'
     targetRevision: 11.9.11
     helm:
-      skipCrds: true
       values: |-
         global:
-          auth:
-            postgresPassword: "admin"
-            username: "admin"
-            password: "admin"
-            database: "potato"
-          service:
-            ports:
-              postgresql: "5432"
+          postgresql:
+            auth:
+              username: "gerson"
+              password: "12345678"
+              database: "potato"
+            service:
+              ports:
+                postgresql: "5432"
         image:
           debug: true
         primary:
