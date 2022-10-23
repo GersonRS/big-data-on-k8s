@@ -1,22 +1,23 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  # app name
   name: minio-operator
-  # deployed yaml
+  annotations:
+    argocd.argoproj.io/sync-wave: "3"
   namespace: cicd
 spec:
+  destination:
+    name: microk8s
+    namespace: deepstorage
   project: default
   source:
-    repoURL: 'git@github.com:GersonRS/big-data-on-k8s.git'
-    path: repository/helm-charts/minio-operator
-    targetRevision: HEAD
+    repoURL: 'https://operator.min.io/'
+    targetRevision: 4.5.3
     helm:
-      valueFiles:
-        - values-development.yaml
-  destination:
-    server: 'https://kubernetes.default.svc'
-    namespace: deepstorage
+      values: |-
+        operator:
+          replicaCount: 1
+    chart: operator
   syncPolicy:
     automated:
       prune: true
