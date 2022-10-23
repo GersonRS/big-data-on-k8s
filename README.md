@@ -30,8 +30,7 @@ kubectl patch storageclass mayastor -p '{"metadata": {"annotations":{"storagecla
 
 # BIG DATA ON K8S 
 # big-data-on-k8s
-secret argocd microk8s = cVkyRNbkuU4dXxa6
-secret argocd minikube = Sw2yf3RC5xaUSCZ3
+
 PASSWORD="cVkyRNbkuU4dXxa6"
 HOSTARGO="192.168.0.200"
 argocd login $HOSTARGO --username admin --password $PASSWORD --insecure

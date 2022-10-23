@@ -13,7 +13,7 @@ spec:
     targetRevision: HEAD
     helm:
       valueFiles:
-        - values-development.yaml
+        - values.yaml
   destination:
     server: 'https://kubernetes.default.svc'
     namespace: database
