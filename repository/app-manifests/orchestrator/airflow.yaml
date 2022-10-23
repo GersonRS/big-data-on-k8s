@@ -8,15 +8,27 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: 'https://github.com/apache/airflow'
-    path: chart
-    targetRevision: HEAD
+    repoURL: 'https://airflow.apache.org/'
+    targetRevision: 1.7.0
     helm:
       values: |-
         executor: "KubernetesExecutor"
-        workers:
-          persistence:
-            size: 10Gi
+        createUserJob:
+          useHelmHooks: false
+        migrateDatabaseJob:
+          useHelmHooks: false
+        data:
+          metadataConnection:
+            user: admin
+            pass: Q1NQZRd1GO
+            protocol: postgresql
+            host: postgres-postgresql.database.svc.cluster.local
+            port: 5432
+            db: potato
+            sslmode: disable
+        postgresql:
+          enabled: false
+    chart: airflow
   destination:
     server: 'https://kubernetes.default.svc'
     namespace: orchestrator
