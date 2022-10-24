@@ -33,6 +33,27 @@ spec:
             sslmode: disable
         postgresql:
           enabled: false
+        dags:
+          enabled: true
+          repo: "git@github.com:GersonRS/airflow-dags.git"
+          branch: main
+          rev: HEAD
+          depth: 1
+          subPath: "dags"
+          sshKeySecret: airflow-ssh-secret
+          knownHosts: |-
+            |1|dNqsN5YElhHl4aI4q31o63rykfs=|qYUwVr9b6I0wCQkMZXlQKY5YPTI= ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBFkKU/vUjQBt+0SY/MawQnXrfoUBM5OqSXliQSNPguEmGaDWLV27Lb3i+6IXgws7qKItx89FPwuuyWEaJIvW/U0=
+            |1|TflHBa1aFmhV7rcTbft76izyV2E=|zPqPROL8sVDVkBMFm2+DXUK2SkY= ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBFkKU/vUjQBt+0SY/MawQnXrfoUBM5OqSXliQSNPguEmGaDWLV27Lb3i+6IXgws7qKItx89FPwuuyWEaJIvW/U0=
+            |1|6eMkXqbu8QxkdUTG5Lnfi5ys6ak=|6ujMFVOPL9iZ/YKizGXDOSkS2xY= ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBJ1VFK4lleT375r100HwveUhjszTpGmBDDOpN5kOItuWf0Gm1cL83UhaCJNIYQS4fWUTff3WQTgZJIfUCweCcTY=
+            |1|dMwFtkJk88pZOpNiu0KrvB0HBLc=|MbJBXnL8wnCHTJM+GVKgLOFc43c= ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBJ1VFK4lleT375r100HwveUhjszTpGmBDDOpN5kOItuWf0Gm1cL83UhaCJNIYQS4fWUTff3WQTgZJIfUCweCcTY=
+            |1|0rpTzxhUNJhKuK8b7gZg7AIdpAQ=|2PaPIUVAnJcONE+bWeaXUl8f5O8= ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBJ04+Dc8L726pF78SB70QBgxVuXjsKHZoXfAbEthMSD0QsueCC1/ZCW8AVO2QolsQcPr+Cs1xurwbqnJ/3G5UsA=
+            |1|8Y5xwfdGfsejgRo9B16GHbsxu4g=|06kHNaxzC4n9LLk2Yc9+zVm2zo8= ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBJ04+Dc8L726pF78SB70QBgxVuXjsKHZoXfAbEthMSD0QsueCC1/ZCW8AVO2QolsQcPr+Cs1xurwbqnJ/3G5UsA=
+            |1|6dPQ8+E2tWwJXCIfyH9FQhgnfXg=|IJmzNQtihwlkHOMypjmUWs5lhdY= ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBEmKSENjQEezOmxkZMy7opKgwFB9nkt5YRrYMjNuG5N87uRgg6CLrbo5wAdT/y6v0mKV0U2w0WZ2YB/++Tpockg=
+            |1|WqL1+AmRqmaysQUbYzYf25oCSmo=|hmtsz9KxlVoKxj1i/yUgBmtkssA= ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBEmKSENjQEezOmxkZMy7opKgwFB9nkt5YRrYMjNuG5N87uRgg6CLrbo5wAdT/y6v0mKV0U2w0WZ2YB/++Tpockg=
+        extraSecrets:
+          airflow-ssh-secret:
+            data: |
+              gitSshKey: 'LS0tLS1CRUdJTiBPUEVOU1NIIFBSSVZBVEUgS0VZLS0tLS0KYjNCbGJuTnphQzFyWlhrdGRqRUFBQUFBQkc1dmJtVUFBQUFFYm05dVpRQUFBQUFBQUFBQkFBQUFNd0FBQUF0emMyZ3RaVwpReU5UVXhPUUFBQUNCbTdGZ3gwdEI3RVE5TXVEeS94S3hYbW01RWdFc1NUMnMydXhlTzViSHo5UUFBQUppQW1scVFnSnBhCmtBQUFBQXR6YzJndFpXUXlOVFV4T1FBQUFDQm03Rmd4MHRCN0VROU11RHkveEt4WG1tNUVnRXNTVDJzMnV4ZU81Ykh6OVEKQUFBRUFSY3BTVkJ5aFQyUkkyKzZDSmVsWFJ2NkJJR0lhWExWbDNvZGhtOFdnWkxtYnNXREhTMEhzUkQweTRQTC9FckZlYQpia1NBU3hKUGF6YTdGNDdsc2ZQMUFBQUFFV2RsY25OdmJuSnpRR3hwZG1VdVkyOXRBUUlEQkE9PQotLS0tLUVORCBPUEVOU1NIIFBSSVZBVEUgS0VZLS0tLS0K'
     chart: airflow
   syncPolicy:
     automated:
