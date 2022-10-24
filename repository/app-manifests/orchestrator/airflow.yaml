@@ -20,10 +20,6 @@ spec:
           useHelmHooks: false
         migrateDatabaseJob:
           useHelmHooks: false
-        # webserver:
-        #   service: 
-        #     type: LoadBalancer
-        #     loadBalancerIP: 192.168.0.203
         data:
           metadataConnection:
             user: gerson

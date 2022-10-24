@@ -15,13 +15,17 @@ spec:
     targetRevision: 2.15.2
     helm:
       values: |-
+        preflight:
+          skipUlimit: true
         storage:
           master:
             count: 1
-            size: 5Gi
+            size: 10Gi
+            storageClass: openebs-hostpath
           tserver:
             count: 1
-            size: 5Gi
+            size: 10Gi
+            storageClass: openebs-hostpath
         resource:
           master:
             requests:
