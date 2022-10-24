@@ -48,3 +48,5 @@ argocd repo add git@github.com:GersonRS/big-data-on-k8s.git --ssh-private-key-pa
 
 <!-- REPOSITORY="https://github.com/GersonRS/big-data-on-k8s.git"
 argocd repo add $REPOSITORY --username GersonRS --password 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 --port-forward -->
+
+<!-- kubectl create secret generic airflow-ssh-secret --from-file=gitSshKey=$HOME/.ssh/id_ed25519 -->
