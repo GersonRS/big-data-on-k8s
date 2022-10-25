@@ -50,3 +50,5 @@ argocd repo add git@github.com:GersonRS/big-data-on-k8s.git --ssh-private-key-pa
 argocd repo add $REPOSITORY --username GersonRS --password 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 --port-forward -->
 
 <!-- kubectl create secret generic airflow-ssh-secret --from-file=gitSshKey=$HOME/.ssh/id_ed25519 -->
+
+<!-- sudo snap run --shell microk8s -c '$SNAP_COMMON/addons/core/addons/mayastor/pools.py create --node pc0 --size 50GB' -->

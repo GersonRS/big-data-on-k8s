@@ -20,12 +20,10 @@ spec:
         storage:
           master:
             count: 1
-            size: 10Gi
-            storageClass: openebs-hostpath
+            storageClass: mayastor
           tserver:
             count: 1
-            size: 10Gi
-            storageClass: openebs-hostpath
+            storageClass: mayastor
         resource:
           master:
             requests:
@@ -43,7 +41,7 @@ spec:
               memory: 1Gi
         replicas:
           master: 1
-          tserver: 1
+          tserver: 2
     chart: yugabyte
   syncPolicy:
     automated:

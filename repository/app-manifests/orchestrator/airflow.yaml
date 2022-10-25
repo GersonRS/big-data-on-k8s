@@ -20,6 +20,9 @@ spec:
           useHelmHooks: false
         migrateDatabaseJob:
           useHelmHooks: false
+        webserver:
+          service: 
+            type: LoadBalancer
         data:
           metadataConnection:
             user: gerson
