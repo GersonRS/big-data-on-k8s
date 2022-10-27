@@ -7,12 +7,12 @@ metadata:
   namespace: cicd
 spec:
   destination:
-    name: microk8s
+    server: 'https://kubernetes.default.svc'
     namespace: database
   project: default
   source:
     repoURL: 'https://charts.yugabyte.com'
-    targetRevision: 2.15.2
+    targetRevision: 2.15.0
     helm:
       values: |-
         preflight:
@@ -41,7 +41,7 @@ spec:
               memory: 1Gi
         replicas:
           master: 1
-          tserver: 2
+          tserver: 1
     chart: yugabyte
   syncPolicy:
     automated:
