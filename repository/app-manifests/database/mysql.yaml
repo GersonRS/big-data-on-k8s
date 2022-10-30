@@ -16,15 +16,16 @@ spec:
     helm:
       values: |-
         auth:
-          database: "my_database"
           username: "gerson"
           password: "8a3d105a0be11de967ee825a671998e1"
         image:
           debug: true
         primary:
-          readinessProbe:
+          startupProbe:
             enabled: false
           livenessProbe:
+            enabled: false
+          readinessProbe:
             enabled: false
           persistence:
             size: 10Gi

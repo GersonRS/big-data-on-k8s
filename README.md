@@ -26,31 +26,10 @@ nmtui
 sudo apt install cockpit
 cockpit port:9090
 ```
-Isso pode ser feito executando os seguintes comandos em cada host :
-```bash
-sudo sysctl vm.nr_hugepages=1024
-echo 'vm.nr_hugepages=1024' | sudo tee -a /etc/sysctl.conf
-sudo apt install linux-modules-extra-$(uname -r)
-sudo modprobe nvme_tcp
-echo 'nvme-tcp' | sudo tee -a /etc/modules-load.d/microk8s-mayastor.conf
-```
->> Lembrar de reiniciar
-
-# Instalação do cluster kubernet
-Habilite o storageclass usando o complemento do Mayastor:
-```bash
-sudo microk8s enable core/mayastor --default-pool-size 100G
-```
-Definir a storageclass mayastor como default:
-
-```bash
-kubectl patch storageclass mayastor -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"true"}}}'
-```
 
 ```sh
 # connect into k8s cluster
-kubectx aks-owshq-dev
-kubectx aks-owshq-qa
+kubectx microk8s
 
 # create namespaces
 k create namespace orchestrator
@@ -78,7 +57,7 @@ helm repo update
 # argo-cd
 # https://artifacthub.io/packages/helm/argo/argo-cd
 # https://github.com/argoproj/argo-helm
-helm install argocd argo/argo-cd --namespace cicd --version 5.8.0
+helm install argocd argo/argo-cd --namespace cicd --version 5.8.5
 
 # install argo-cd [gitops]
 # create a load balancer
@@ -90,7 +69,7 @@ kubens cicd
 ARGOCD_LB=$(kubectl get services -l app.kubernetes.io/name=argocd-server,app.kubernetes.io/instance=argocd -o jsonpath="{.items[0].status.loadBalancer.ingress[0].ip}")
 
 # get password to log into argocd portal
-# argocd login 192.168.0.200 --username admin --password IvaP3LGUxO4sC02e --insecure
+# argocd login 192.168.0.200 --username admin --password oSpeCNSXFv-lr9Sr --insecure
 k get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d | xargs -t -I {} argocd login $ARGOCD_LB --username admin --password {} --insecure
 
 # register cluster

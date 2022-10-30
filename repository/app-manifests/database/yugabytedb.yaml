@@ -3,7 +3,7 @@ kind: Application
 metadata:
   name: yugabytedb
   annotations:
-    argocd.argoproj.io/sync-wave: "3"
+    argocd.argoproj.io/sync-wave: "4"
   namespace: cicd
 spec:
   destination:
@@ -12,7 +12,7 @@ spec:
   project: default
   source:
     repoURL: 'https://charts.yugabyte.com'
-    targetRevision: 2.15.0
+    targetRevision: 2.15.3
     helm:
       values: |-
         preflight:
@@ -20,28 +20,20 @@ spec:
         storage:
           master:
             count: 1
-            storageClass: mayastor
           tserver:
             count: 1
-            storageClass: mayastor
         resource:
           master:
             requests:
-              cpu: 500m
+              cpu: 0.5
               memory: 0.5Gi
-            limits:
-              cpu: 1
-              memory: 1Gi
           tserver:
             requests:
               cpu: 500m
               memory: 0.5Gi
-            limits:
-              cpu: 1
-              memory: 1Gi
         replicas:
-          master: 1
-          tserver: 1
+          master: 3
+          tserver: 3
     chart: yugabyte
   syncPolicy:
     automated:
