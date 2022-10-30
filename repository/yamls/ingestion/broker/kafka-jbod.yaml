@@ -26,12 +26,6 @@ spec:
         port: 9094
         type: loadbalancer
         tls: false
-    readinessProbe:
-      initialDelaySeconds: 15
-      timeoutSeconds: 5
-    livenessProbe:
-      initialDelaySeconds: 15
-      timeoutSeconds: 5
     config:
       # Report and UI for Cruise Control
       metric.reporters: "com.linkedin.kafka.cruisecontrol.metricsreporter.CruiseControlMetricsReporter"
@@ -65,6 +59,12 @@ spec:
           key: kafka-metrics-config.yml
   # zookeeper information
   zookeeper:
+    livenessProbe:
+      initialDelaySeconds: 60
+      timeoutSeconds: 5
+    readinessProbe:
+      initialDelaySeconds: 60
+      timeoutSeconds: 5
     replicas: 3
     storage:
         type: persistent-claim
