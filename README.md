@@ -120,7 +120,6 @@ k apply -f repository/app-manifests/database/yugabytedb.yaml
 
 # deep storage
 k apply -f repository/app-manifests/deepstorage/minio-operator.yaml
-k apply -f repository/app-manifests/deepstorage/minio.yaml
 
 # datastore
 k apply -f repository/app-manifests/datastore/pinot.yaml
