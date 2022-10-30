@@ -5,7 +5,7 @@ metadata:
 spec:
   kafka:
     version: 3.2.3
-    replicas: 1
+    replicas: 2
     listeners:
       - name: plain
         port: 9092
@@ -18,20 +18,20 @@ spec:
     config:
       # Report and UI for Cruise Control
       metric.reporters: "com.linkedin.kafka.cruisecontrol.metricsreporter.CruiseControlMetricsReporter"
-      offsets.topic.replication.factor: 1
-      transaction.state.log.replication.factor: 1
+      offsets.topic.replication.factor: 2
+      transaction.state.log.replication.factor: 2
       transaction.state.log.min.isr: 1
-      default.replication.factor: 1
+      default.replication.factor: 2
       min.insync.replicas: 1
       inter.broker.protocol.version: "3.2"
     storage:
       type: ephemeral
     resources:
       requests:
-        memory: 500Mi
+        memory: 256Mi
         cpu: "250m"
       limits:
-        memory: 1Gi
+        memory: 512Mi
         cpu: "500m"
     metricsConfig:
       type: jmxPrometheusExporter
@@ -46,7 +46,7 @@ spec:
     readinessProbe:
       initialDelaySeconds: 60
       timeoutSeconds: 5
-    replicas: 1
+    replicas: 2
     storage:
       type: ephemeral
     resources:

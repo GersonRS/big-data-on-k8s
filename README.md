@@ -106,8 +106,8 @@ k apply -f repository/app-manifests/ingestion/strimzi-kafka-operator.yaml
 k apply -f repository/app-manifests/ingestion/kafka-broker.yaml
 k apply -f repository/app-manifests/ingestion/kafka-broker-ephemeral.yaml
 k apply -f repository/app-manifests/ingestion/schema-registry.yaml
-k apply -f repository/app-manifests/ingestion/kafka-connect.yaml
 k apply -f repository/app-manifests/ingestion/cruise-control.yaml
+k apply -f repository/app-manifests/ingestion/kafka-connect.yaml
 k apply -f repository/app-manifests/ingestion/kafka-connectors.yaml
 
 
