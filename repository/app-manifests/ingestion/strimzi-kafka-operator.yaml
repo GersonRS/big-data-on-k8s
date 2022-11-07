@@ -10,12 +10,13 @@ spec:
   project: default
   source:
     repoURL: 'https://strimzi.io/charts/'
-    targetRevision: 0.31.1
+    targetRevision: 0.32.0
     helm:
       values: |-
+        replicas: 2
         resources:
           limits:
-            memory: 512Mi
+            memory: 1Gi
             cpu: 1000m
     chart: strimzi-kafka-operator
   syncPolicy:

@@ -33,8 +33,8 @@ class LogCompactionUsersJson(object):
                 p.produce(
                     topic=kafka_topic,
                     key=str(randint(0, 100)),
-                    value=json.dumps(data).encode('utf-8'),
-                    callback=delivery_reports.on_delivery_json
+                    value=json.dumps(data).encode("utf-8"),
+                    callback=delivery_reports.on_delivery_json,
                 )
 
             except BufferError:

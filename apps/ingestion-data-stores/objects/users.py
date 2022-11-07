@@ -16,22 +16,22 @@ class Users(object):
 
     # explicitly declare all schema members
     __slots__ = [
-                    "user_id",
-                    "uuid",
-                    "first_name",
-                    "last_name",
-                    "date_birth",
-                    "city",
-                    "country",
-                    "company_name",
-                    "job",
-                    "phone_number",
-                    "last_access_time",
-                    "time_zone",
-                    "dt_current_timestamp"
-                ]
+        "user_id",
+        "uuid",
+        "first_name",
+        "last_name",
+        "date_birth",
+        "city",
+        "country",
+        "company_name",
+        "job",
+        "phone_number",
+        "last_access_time",
+        "time_zone",
+        "dt_current_timestamp",
+    ]
 
-    # define init 
+    # define init
     def __init__(self):
 
         self.user_id = randint(0, 1000)
@@ -64,7 +64,7 @@ class Users(object):
             "phone_number": self.phone_number,
             "last_access_time": self.last_access_time,
             "time_zone": self.time_zone,
-            "dt_current_timestamp": self.dt_current_timestamp
+            "dt_current_timestamp": self.dt_current_timestamp,
         }
 
     # dict [output] = to_dict_events
@@ -83,7 +83,7 @@ class Users(object):
             "phone_number": self.phone_number,
             "last_access_time": self.last_access_time,
             "time_zone": self.time_zone,
-            "dt_current_timestamp": str(self.dt_current_timestamp)
+            "dt_current_timestamp": str(self.dt_current_timestamp),
         }
 
     # request multiple rows (events) at a time
@@ -109,7 +109,7 @@ class Users(object):
                 "phone_number": fake.phone_number(),
                 "last_access_time": fake.iso8601(),
                 "time_zone": fake.timezone(),
-                "dt_current_timestamp": str(datetime.now())
+                "dt_current_timestamp": str(datetime.now()),
             }
             # append each run into a list of dictionaries
             list_return_data.append(get_faker_dt)
@@ -117,7 +117,7 @@ class Users(object):
 
         # convert list to pandas dataframe
         df_list_data = pd.DataFrame(list_return_data)
-        return_dt = df_list_data.to_dict('records')
+        return_dt = df_list_data.to_dict("records")
         return return_dt
 
     # log compaction demo
@@ -142,7 +142,7 @@ class Users(object):
                 "phone_number": fake.phone_number(),
                 "last_access_time": fake.iso8601(),
                 "time_zone": fake.timezone(),
-                "dt_current_timestamp": str(datetime.now())
+                "dt_current_timestamp": str(datetime.now()),
             }
             # append each run into a list of dictionaries
             list_return_data.append(get_faker_dt)
@@ -150,5 +150,5 @@ class Users(object):
 
         # convert list to pandas dataframe
         df_list_data = pd.DataFrame(list_return_data)
-        return_dt = df_list_data.to_dict('records')
+        return_dt = df_list_data.to_dict("records")
         return return_dt

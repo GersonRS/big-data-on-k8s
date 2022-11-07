@@ -1,5 +1,6 @@
 # import libraries
 import os
+
 from dotenv import load_dotenv
 from sqlalchemy import create_engine
 
@@ -149,8 +150,8 @@ create table owshq.device
 create table dbo.bank
 (
     incr int IDENTITY(1,1) PRIMARY KEY,
-	id bigint,
-	uid varchar(max),
+    id bigint,
+    uid varchar(max),
 	account_number varchar(max),
 	iban varchar(max),
 	bank_name varchar(max),

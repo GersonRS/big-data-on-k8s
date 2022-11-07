@@ -17,13 +17,13 @@ ycql = os.getenv("YCQL")
 size = os.getenv("SIZE")
 
 # pandas config
-pd.set_option('display.max_rows', 100000)
-pd.set_option('display.max_columns', 500)
-pd.set_option('display.width', 1000)
+pd.set_option("display.max_rows", 100000)
+pd.set_option("display.max_columns", 500)
+pd.set_option("display.width", 1000)
 
 # set up parameters to request from api call
-params = {'size': size}
-url_get_user = 'https://random-data-api.com/api/users/random_user'
+params = {"size": size}
+url_get_user = "https://random-data-api.com/api/users/random_user"
 
 # create table statement on ycql
 # json fields
@@ -48,7 +48,6 @@ CREATE TABLE IF NOT EXISTS owshq.user
 
 # class to insert into datastore
 class YCQL(object):
-
     def split_to_partitions(self, df, partition_number):
         permuted_indices = np.random.permutation(len(df))
         partitions = []
@@ -64,7 +63,7 @@ class YCQL(object):
         print(session)
 
         # set keyspace
-        session.set_keyspace('owshq')
+        session.set_keyspace("owshq")
 
         # get request [api] to store in a variable
         # using method get to retrieve data
@@ -74,20 +73,47 @@ class YCQL(object):
         # use pandas dataframe to ease the insert of the data
         # select columns
         pd_df_user = pd.DataFrame.from_dict(dt_user)
-        pd_df_user = pd_df_user[['id', 'uid', 'first_name', 'last_name', 'username', 'email', 'gender', 'date_of_birth']]
+        pd_df_user = pd_df_user[
+            [
+                "id",
+                "uid",
+                "first_name",
+                "last_name",
+                "username",
+                "email",
+                "gender",
+                "date_of_birth",
+            ]
+        ]
 
         # add [user_id] into dataframe
         # add [dt_current_timestamp] into dataframe
-        pd_df_user['user_id'] = Requests().gen_user_id()
-        pd_df_user['dt_current_timestamp'] = Requests().gen_timestamp()
+        pd_df_user["user_id"] = Requests().gen_user_id()
+        pd_df_user["dt_current_timestamp"] = Requests().gen_timestamp()
 
         # insert into table
         # using batch operation
-        prepared_query = session.prepare("INSERT INTO owshq.user(id,uid,first_name,last_name,username,email,gender,date_of_birth,user_id,dt_current_timestamp) VALUES (?,?,?,?,?,?,?,?,?,?)")
+        prepared_query = session.prepare(
+            "INSERT INTO owshq.user(id,uid,first_name,last_name,username,email,gender,date_of_birth,user_id,dt_current_timestamp) VALUES (?,?,?,?,?,?,?,?,?,?)"
+        )
         for partition in self.split_to_partitions(pd_df_user, CASSANDRA_PARTITION_NUM):
             batch = BatchStatement(consistency_level=ConsistencyLevel.QUORUM)
             for index, item in partition.iterrows():
-                batch.add(prepared_query, (item[0], item[1], item[2], item[3], item[4], item[5], item[6], item[7], item[8], item[9]))
+                batch.add(
+                    prepared_query,
+                    (
+                        item[0],
+                        item[1],
+                        item[2],
+                        item[3],
+                        item[4],
+                        item[5],
+                        item[6],
+                        item[7],
+                        item[8],
+                        item[9],
+                    ),
+                )
             session.execute(batch)
 
         # close the connection

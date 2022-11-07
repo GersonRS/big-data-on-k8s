@@ -1,9 +1,10 @@
-apiVersion: batch/v1beta1
+apiVersion: batch/v1
 kind: CronJob
 metadata:
   name: crj-ysql-ingestion
+  namespace: app
 spec:
-  schedule: "*/10 * * * *"
+  schedule: "0 0 */1 * *"
   concurrencyPolicy: Forbid
   jobTemplate:
     spec:
@@ -12,6 +13,9 @@ spec:
           containers:
           - name: crj-ysql-ingestion
             image: owshq/ingestion-data-stores:0.1
+            envFrom:
+            - secretRef:
+                name: cronjob-environment
             imagePullPolicy: IfNotPresent
             command: ["python3.9","cli.py","ysql"]
           restartPolicy: OnFailure

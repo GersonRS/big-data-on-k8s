@@ -12,10 +12,39 @@ seed(1)
 class UsersAvro(object):
 
     # use __slots__ to explicitly declare all schema members
-    __slots__ = ["user_id", "uuid", "first_name", "last_name", "date_birth", "city", "country", "company_name", "job", "phone_number", "last_access_time", "time_zone", "dt_current_timestamp"]
+    __slots__ = [
+        "user_id",
+        "uuid",
+        "first_name",
+        "last_name",
+        "date_birth",
+        "city",
+        "country",
+        "company_name",
+        "job",
+        "phone_number",
+        "last_access_time",
+        "time_zone",
+        "dt_current_timestamp",
+    ]
 
     # define init function based on the expected input
-    def __init__(self, user_id=None, uuid=None, first_name=None, last_name=None, date_birth=None, city=None, country=None, company_name=None, job=None, phone_number=None, last_access_time=None, time_zone=None, dt_current_timestamp=None):
+    def __init__(
+        self,
+        user_id=None,
+        uuid=None,
+        first_name=None,
+        last_name=None,
+        date_birth=None,
+        city=None,
+        country=None,
+        company_name=None,
+        job=None,
+        phone_number=None,
+        last_access_time=None,
+        time_zone=None,
+        dt_current_timestamp=None,
+    ):
 
         self.user_id = user_id
         self.uuid = uuid
@@ -48,17 +77,19 @@ class UsersAvro(object):
             "phone_number": self.phone_number,
             "last_access_time": self.last_access_time,
             "time_zone": self.time_zone,
-            "dt_current_timestamp": self.dt_current_timestamp
+            "dt_current_timestamp": self.dt_current_timestamp,
         }
 
     @staticmethod
-    def avro_producer(broker, schema_registry, schema_key, schema_value, kafka_topic, gen_dt_rows):
+    def avro_producer(
+        broker, schema_registry, schema_key, schema_value, kafka_topic, gen_dt_rows
+    ):
 
         # init producer using key & value [schema registry] integration
         producer = AvroProducer(
             producer_settings.producer_settings_avro(broker, schema_registry),
             default_key_schema=avro.loads(schema_key),
-            default_value_schema=avro.loads(schema_value)
+            default_value_schema=avro.loads(schema_value),
         )
 
         # get data to insert
@@ -74,19 +105,19 @@ class UsersAvro(object):
             try:
 
                 # map columns and access using dict values
-                record.user_id = get_data[inserts]['user_id']
-                record.uuid = get_data[inserts]['uuid']
-                record.first_name = get_data[inserts]['first_name']
-                record.last_name = get_data[inserts]['last_name']
-                record.date_birth = get_data[inserts]['date_birth']
-                record.city = get_data[inserts]['city']
-                record.country = get_data[inserts]['country']
-                record.company_name = get_data[inserts]['company_name']
-                record.job = get_data[inserts]['job']
-                record.phone_number = get_data[inserts]['phone_number']
-                record.last_access_time = get_data[inserts]['last_access_time']
-                record.time_zone = get_data[inserts]['time_zone']
-                record.dt_current_timestamp = get_data[inserts]['dt_current_timestamp']
+                record.user_id = get_data[inserts]["user_id"]
+                record.uuid = get_data[inserts]["uuid"]
+                record.first_name = get_data[inserts]["first_name"]
+                record.last_name = get_data[inserts]["last_name"]
+                record.date_birth = get_data[inserts]["date_birth"]
+                record.city = get_data[inserts]["city"]
+                record.country = get_data[inserts]["country"]
+                record.company_name = get_data[inserts]["company_name"]
+                record.job = get_data[inserts]["job"]
+                record.phone_number = get_data[inserts]["phone_number"]
+                record.last_access_time = get_data[inserts]["last_access_time"]
+                record.time_zone = get_data[inserts]["time_zone"]
+                record.dt_current_timestamp = get_data[inserts]["dt_current_timestamp"]
 
                 # print(record.to_dict())
 
@@ -97,9 +128,11 @@ class UsersAvro(object):
                 # to aid in debugging we provide the original object to the delivery callback.
                 producer.produce(
                     topic=kafka_topic,
-                    key={'user_id': record.user_id},
+                    key={"user_id": record.user_id},
                     value=record.to_dict(),
-                    callback=lambda err, msg, obj=record: delivery_reports.on_delivery_avro(err, msg, obj)
+                    callback=lambda err, msg, obj=record: delivery_reports.on_delivery_avro(
+                        err, msg, obj
+                    ),
                 )
 
             except BufferError:

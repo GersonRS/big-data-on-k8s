@@ -15,22 +15,21 @@ mongodb_database = os.getenv("MONGODB_DATABASE")
 size = os.getenv("SIZE")
 
 # set up parameters to request from api call
-params = {'size': size}
-url_get_user = 'https://random-data-api.com/api/users/random_user'
-url_get_restaurant = 'https://random-data-api.com/api/restaurant/random_restaurant'
-url_get_vehicle = 'https://random-data-api.com/api/vehicle/random_vehicle'
-url_get_stripe = 'https://random-data-api.com/api/stripe/random_stripe'
-url_get_google_auth = 'https://random-data-api.com/api/omniauth/google_get'
-url_get_facebook_auth = 'https://random-data-api.com/api/omniauth/facebook_get'
-url_get_twitter_auth = 'https://random-data-api.com/api/omniauth/twitter_get'
-url_get_linkedin_auth = 'https://random-data-api.com/api/omniauth/linkedin_get'
-url_get_github_auth = 'https://random-data-api.com/api/omniauth/github_get'
-url_get_apple_auth = 'https://random-data-api.com/api/omniauth/apple_get'
+params = {"size": size}
+url_get_user = "https://random-data-api.com/api/users/random_user"
+url_get_restaurant = "https://random-data-api.com/api/restaurant/random_restaurant"
+url_get_vehicle = "https://random-data-api.com/api/vehicle/random_vehicle"
+url_get_stripe = "https://random-data-api.com/api/stripe/random_stripe"
+url_get_google_auth = "https://random-data-api.com/api/omniauth/google_get"
+url_get_facebook_auth = "https://random-data-api.com/api/omniauth/facebook_get"
+url_get_twitter_auth = "https://random-data-api.com/api/omniauth/twitter_get"
+url_get_linkedin_auth = "https://random-data-api.com/api/omniauth/linkedin_get"
+url_get_github_auth = "https://random-data-api.com/api/omniauth/github_get"
+url_get_apple_auth = "https://random-data-api.com/api/omniauth/apple_get"
 
 
 # class to insert into datastore
 class MongoDB(object):
-
     @staticmethod
     def insert_rows():
         # get request [api] to store in a variable
@@ -39,11 +38,21 @@ class MongoDB(object):
         dt_restaurant = Requests.api_get_request(url=url_get_restaurant, params=params)
         dt_vehicle = Requests.api_get_request(url=url_get_vehicle, params=params)
         dt_stripe = Requests.api_get_request(url=url_get_stripe, params=params)
-        dt_google_auth = Requests.api_get_request(url=url_get_google_auth, params=params)
-        dt_facebook_auth = Requests.api_get_request(url=url_get_facebook_auth, params=params)
-        dt_twitter_auth = Requests.api_get_request(url=url_get_twitter_auth, params=params)
-        dt_linkedin_auth = Requests.api_get_request(url=url_get_linkedin_auth, params=params)
-        dt_github_auth = Requests.api_get_request(url=url_get_github_auth, params=params)
+        dt_google_auth = Requests.api_get_request(
+            url=url_get_google_auth, params=params
+        )
+        dt_facebook_auth = Requests.api_get_request(
+            url=url_get_facebook_auth, params=params
+        )
+        dt_twitter_auth = Requests.api_get_request(
+            url=url_get_twitter_auth, params=params
+        )
+        dt_linkedin_auth = Requests.api_get_request(
+            url=url_get_linkedin_auth, params=params
+        )
+        dt_github_auth = Requests.api_get_request(
+            url=url_get_github_auth, params=params
+        )
         dt_apple_auth = Requests.api_get_request(url=url_get_apple_auth, params=params)
 
         # convert python list (dict)
@@ -61,20 +70,20 @@ class MongoDB(object):
 
         # add [user_id] into dataframe
         # add [dt_current_timestamp] into dataframe
-        pd_df_user['user_id'] = Requests().gen_user_id()
-        pd_df_restaurant['user_id'] = Requests().gen_user_id()
-        pd_df_vehicle['user_id'] = Requests().gen_user_id()
-        pd_df_stripe['user_id'] = Requests().gen_user_id()
-        pd_df_user['dt_current_timestamp'] = Requests().gen_timestamp()
-        pd_df_restaurant['dt_current_timestamp'] = Requests().gen_timestamp()
-        pd_df_vehicle['dt_current_timestamp'] = Requests().gen_timestamp()
-        pd_df_stripe['dt_current_timestamp'] = Requests().gen_timestamp()
-        pd_df_google_auth['dt_current_timestamp'] = Requests().gen_timestamp()
-        pd_df_facebook_auth['dt_current_timestamp'] = Requests().gen_timestamp()
-        pd_df_twitter_auth['dt_current_timestamp'] = Requests().gen_timestamp()
-        pd_df_linkedin_auth['dt_current_timestamp'] = Requests().gen_timestamp()
-        pd_df_github_auth['dt_current_timestamp'] = Requests().gen_timestamp()
-        pd_df_apple_auth['dt_current_timestamp'] = Requests().gen_timestamp()
+        pd_df_user["user_id"] = Requests().gen_user_id()
+        pd_df_restaurant["user_id"] = Requests().gen_user_id()
+        pd_df_vehicle["user_id"] = Requests().gen_user_id()
+        pd_df_stripe["user_id"] = Requests().gen_user_id()
+        pd_df_user["dt_current_timestamp"] = Requests().gen_timestamp()
+        pd_df_restaurant["dt_current_timestamp"] = Requests().gen_timestamp()
+        pd_df_vehicle["dt_current_timestamp"] = Requests().gen_timestamp()
+        pd_df_stripe["dt_current_timestamp"] = Requests().gen_timestamp()
+        pd_df_google_auth["dt_current_timestamp"] = Requests().gen_timestamp()
+        pd_df_facebook_auth["dt_current_timestamp"] = Requests().gen_timestamp()
+        pd_df_twitter_auth["dt_current_timestamp"] = Requests().gen_timestamp()
+        pd_df_linkedin_auth["dt_current_timestamp"] = Requests().gen_timestamp()
+        pd_df_github_auth["dt_current_timestamp"] = Requests().gen_timestamp()
+        pd_df_apple_auth["dt_current_timestamp"] = Requests().gen_timestamp()
 
         # connecting into mongodb
         # set database connectivity
@@ -83,17 +92,17 @@ class MongoDB(object):
 
         # setting up collection to insert data
         # pandas dataframe
-        collection_user = db['user']
-        collection_restaurant = db['restaurant']
-        collection_vehicle = db['vehicle']
-        collection_stripe = db['stripe']
-        collection_google_auth = db['google_auth']
-        collection_facebook_auth = db['facebook_auth']
-        collection_twitter_auth = db['twitter_auth']
-        collection_linkedin_auth = db['linkedin_auth']
-        collection_github_auth = db['github_auth']
-        collection_apple_auth = db['apple_auth']
-        collection_payments = db['payments']
+        collection_user = db["user"]
+        collection_restaurant = db["restaurant"]
+        collection_vehicle = db["vehicle"]
+        collection_stripe = db["stripe"]
+        collection_google_auth = db["google_auth"]
+        collection_facebook_auth = db["facebook_auth"]
+        collection_twitter_auth = db["twitter_auth"]
+        collection_linkedin_auth = db["linkedin_auth"]
+        collection_github_auth = db["github_auth"]
+        collection_apple_auth = db["apple_auth"]
+        collection_payments = db["payments"]
 
         # user [df]
         # get records from dataframe

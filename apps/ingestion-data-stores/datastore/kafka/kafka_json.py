@@ -31,8 +31,8 @@ class Kafka(object):
                 # been successfully delivered or failed permanently.
                 p.produce(
                     topic=kafka_topic,
-                    value=json.dumps(data).encode('utf-8'),
-                    callback=delivery_reports.on_delivery_json
+                    value=json.dumps(data).encode("utf-8"),
+                    callback=delivery_reports.on_delivery_json,
                 )
 
             except BufferError:

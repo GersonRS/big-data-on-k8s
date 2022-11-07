@@ -19,11 +19,11 @@ schema_registry_server = os.getenv("KAFKA_SCHEMA_REGISTRY")
 def producer_settings_json(broker):
 
     json = {
-        'client.id': kafka_client_id_json,
-        'bootstrap.servers': broker,
+        "client.id": kafka_client_id_json,
+        "bootstrap.servers": broker,
         "batch.num.messages": 100000,
-        "linger.ms": 1000
-        }
+        "linger.ms": 1000,
+    }
 
     # return data
     return dict(json)
@@ -33,15 +33,15 @@ def producer_settings_json(broker):
 def producer_settings_json_scram_sha_512(broker):
 
     json = {
-        'client.id': kafka_client_id_json,
-        'bootstrap.servers': broker,
-        'security.protocol': 'SASL_SSL',
-        'sasl.mechanism': 'SCRAM-SHA-512',
-        'ssl.ca.location': kafka_ca_location,
-        'sasl.username': kafka_sasl_username,
-        'sasl.password': kafka_sasl_password,
-        'log.connection.close': True,
-        }
+        "client.id": kafka_client_id_json,
+        "bootstrap.servers": broker,
+        "security.protocol": "SASL_SSL",
+        "sasl.mechanism": "SCRAM-SHA-512",
+        "ssl.ca.location": kafka_ca_location,
+        "sasl.username": kafka_sasl_username,
+        "sasl.password": kafka_sasl_password,
+        "log.connection.close": True,
+    }
 
     # return data
     return dict(json)
@@ -61,8 +61,8 @@ def producer_settings_avro(broker, schema_registry):
         "batch.num.messages": 1000,
         "queue.buffering.max.ms": 100,
         "queue.buffering.max.messages": 1000,
-        "linger.ms": 100
-        }
+        "linger.ms": 100,
+    }
 
     # return data
     return dict(avro)

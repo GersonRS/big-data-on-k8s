@@ -16,14 +16,14 @@ class CreditCard(object):
 
     # explicitly declare all schema members
     __slots__ = [
-                    "uuid",
-                    "user_id",
-                    "provider",
-                    "number",
-                    "expire_data",
-                    "security_code",
-                    "dt_current_timestamp"
-                ]
+        "uuid",
+        "user_id",
+        "provider",
+        "number",
+        "expire_data",
+        "security_code",
+        "dt_current_timestamp",
+    ]
 
     # define init
     def __init__(self):
@@ -46,7 +46,7 @@ class CreditCard(object):
             "number": self.number,
             "expire_data": self.expire_data,
             "security_code": self.security_code,
-            "dt_current_timestamp": self.dt_current_timestamp
+            "dt_current_timestamp": self.dt_current_timestamp,
         }
 
     # dict [output] = to_dict_events
@@ -59,7 +59,7 @@ class CreditCard(object):
             "number": str(self.number),
             "expire_data": self.expire_data,
             "security_code": self.security_code,
-            "dt_current_timestamp": str(self.dt_current_timestamp)
+            "dt_current_timestamp": str(self.dt_current_timestamp),
         }
 
     # request multiple rows (events) at a time
@@ -79,7 +79,7 @@ class CreditCard(object):
                 "number": fake.credit_card_number(),
                 "expire_data": fake.credit_card_expire(),
                 "security_code": fake.credit_card_security_code(),
-                "dt_current_timestamp": str(datetime.now())
+                "dt_current_timestamp": str(datetime.now()),
             }
             # append each run into a list of dictionaries
             list_return_data.append(get_faker_dt)
@@ -87,5 +87,5 @@ class CreditCard(object):
 
         # convert list to pandas dataframe
         df_list_data = pd.DataFrame(list_return_data)
-        return_dt = df_list_data.to_dict('records')
+        return_dt = df_list_data.to_dict("records")
         return return_dt

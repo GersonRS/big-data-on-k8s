@@ -16,6 +16,7 @@ spec:
     helm:
       values: |-
         auth:
+          database: "owshq"
           username: "gerson"
           password: "8a3d105a0be11de967ee825a671998e1"
         image:

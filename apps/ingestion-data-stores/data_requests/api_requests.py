@@ -39,8 +39,8 @@ class Requests(object):
                 dict_request = dt_request.json()
 
             except HTTPError as http_err:
-                print(f'http error occurred: {http_err}')
+                print(f"http error occurred: {http_err}")
             except Exception as err:
-                print(f'api not available at this moment.: {err}')
+                print(f"api not available at this moment.: {err}")
             else:
                 return dict_request

@@ -16,19 +16,19 @@ class Agent(object):
 
     # explicitly declare all schema members
     __slots__ = [
-                    "uuid",
-                    "user_id",
-                    "platform",
-                    "email",
-                    "domain",
-                    "hostname",
-                    "method",
-                    "url",
-                    "ipv4",
-                    "port_number",
-                    "mac_address",
-                    "dt_current_timestamp"
-                ]
+        "uuid",
+        "user_id",
+        "platform",
+        "email",
+        "domain",
+        "hostname",
+        "method",
+        "url",
+        "ipv4",
+        "port_number",
+        "mac_address",
+        "dt_current_timestamp",
+    ]
 
     # define init
     def __init__(self):
@@ -61,7 +61,7 @@ class Agent(object):
             "ipv4": self.ipv4,
             "port_number": self.port_number,
             "mac_address": self.mac_address,
-            "dt_current_timestamp": self.dt_current_timestamp
+            "dt_current_timestamp": self.dt_current_timestamp,
         }
 
     # dict [output] = to_dict_events
@@ -79,7 +79,7 @@ class Agent(object):
             "ipv4": self.ipv4,
             "port_number": str(self.port_number),
             "mac_address": self.mac_address,
-            "dt_current_timestamp": str(self.dt_current_timestamp)
+            "dt_current_timestamp": str(self.dt_current_timestamp),
         }
 
     # request multiple rows (events) at a time
@@ -104,7 +104,7 @@ class Agent(object):
                 "ipv4": fake.ipv4(),
                 "port_number": str(fake.port_number()),
                 "mac_address": fake.mac_address(),
-                "dt_current_timestamp": str(datetime.now())
+                "dt_current_timestamp": str(datetime.now()),
             }
             # append each run into a list of dictionaries
             list_return_data.append(get_faker_dt)
@@ -112,5 +112,5 @@ class Agent(object):
 
         # convert list to pandas dataframe
         df_list_data = pd.DataFrame(list_return_data)
-        return_dt = df_list_data.to_dict('records')
+        return_dt = df_list_data.to_dict("records")
         return return_dt

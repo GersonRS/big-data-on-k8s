@@ -69,7 +69,7 @@ kubens cicd
 ARGOCD_LB=$(kubectl get services -l app.kubernetes.io/name=argocd-server,app.kubernetes.io/instance=argocd -o jsonpath="{.items[0].status.loadBalancer.ingress[0].ip}")
 
 # get password to log into argocd portal
-# argocd login 192.168.0.200 --username admin --password oSpeCNSXFv-lr9Sr --insecure
+# argocd login 192.168.0.200 --username admin --password KrDrAt54s65qdXtx --insecure
 k get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d | xargs -t -I {} argocd login $ARGOCD_LB --username admin --password {} --insecure
 
 # register cluster
@@ -164,3 +164,9 @@ argocd repo add $REPOSITORY --username GersonRS --password ghp_fMxeeQy5i4bHdXTGB
 
 <!-- sudo snap run --shell microk8s -c '$SNAP_COMMON/addons/core/addons/mayastor/pools.py add --node pc0 --size 50GB' -->
 <!-- sudo snap run --shell microk8s -c '$SNAP_COMMON/addons/core/addons/mayastor/pools.py remove microk8s-pc1-pool --force --purge' -->
+
+k apply -f crj_ysql.yaml -n app
+k apply -f crj_minio.yaml -n app
+k apply -f crj_mysql.yaml -n app
+k apply -f crj_postgres.yaml -n app
+k apply -f crj-strimzi-events.yaml -n app

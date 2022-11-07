@@ -12,10 +12,27 @@ seed(1)
 class CreditCardAvro(object):
 
     # use __slots__ to explicitly declare all schema members
-    __slots__ = ["uuid", "user_id", "provider", "number", "expire_data", "security_code", "dt_current_timestamp"]
+    __slots__ = [
+        "uuid",
+        "user_id",
+        "provider",
+        "number",
+        "expire_data",
+        "security_code",
+        "dt_current_timestamp",
+    ]
 
     # define init function based on the expected input
-    def __init__(self, uuid=None, user_id=None, provider=None, number=None, expire_data=None, security_code=None, dt_current_timestamp=None):
+    def __init__(
+        self,
+        uuid=None,
+        user_id=None,
+        provider=None,
+        number=None,
+        expire_data=None,
+        security_code=None,
+        dt_current_timestamp=None,
+    ):
 
         self.uuid = uuid
         self.user_id = user_id
@@ -36,17 +53,19 @@ class CreditCardAvro(object):
             "number": self.number,
             "expire_data": self.expire_data,
             "security_code": self.security_code,
-            "dt_current_timestamp": self.dt_current_timestamp
+            "dt_current_timestamp": self.dt_current_timestamp,
         }
 
     @staticmethod
-    def avro_producer(broker, schema_registry, schema_key, schema_value, kafka_topic, gen_dt_rows):
+    def avro_producer(
+        broker, schema_registry, schema_key, schema_value, kafka_topic, gen_dt_rows
+    ):
 
         # init producer using key & value [schema registry] integration
         producer = AvroProducer(
             producer_settings.producer_settings_avro(broker, schema_registry),
             default_key_schema=avro.loads(schema_key),
-            default_value_schema=avro.loads(schema_value)
+            default_value_schema=avro.loads(schema_value),
         )
 
         # get data to insert
@@ -62,13 +81,13 @@ class CreditCardAvro(object):
             try:
 
                 # map columns and access using dict values
-                record.uuid = get_data[inserts]['uuid']
-                record.user_id = get_data[inserts]['user_id']
-                record.provider = get_data[inserts]['provider']
-                record.number = get_data[inserts]['number']
-                record.expire_data = get_data[inserts]['expire_data']
-                record.security_code = get_data[inserts]['security_code']
-                record.dt_current_timestamp = get_data[inserts]['dt_current_timestamp']
+                record.uuid = get_data[inserts]["uuid"]
+                record.user_id = get_data[inserts]["user_id"]
+                record.provider = get_data[inserts]["provider"]
+                record.number = get_data[inserts]["number"]
+                record.expire_data = get_data[inserts]["expire_data"]
+                record.security_code = get_data[inserts]["security_code"]
+                record.dt_current_timestamp = get_data[inserts]["dt_current_timestamp"]
 
                 # print(record.to_dict())
 
@@ -79,9 +98,11 @@ class CreditCardAvro(object):
                 # to aid in debugging we provide the original object to the delivery callback.
                 producer.produce(
                     topic=kafka_topic,
-                    key={'user_id': record.user_id},
+                    key={"user_id": record.user_id},
                     value=record.to_dict(),
-                    callback=lambda err, msg, obj=record: delivery_reports.on_delivery_avro(err, msg, obj)
+                    callback=lambda err, msg, obj=record: delivery_reports.on_delivery_avro(
+                        err, msg, obj
+                    ),
                 )
 
             except BufferError:

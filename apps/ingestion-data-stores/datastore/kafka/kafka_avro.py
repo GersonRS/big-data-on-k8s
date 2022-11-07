@@ -6,13 +6,15 @@ from confluent_kafka.avro import AvroProducer
 
 
 # producer function = [agent]
-def avro_producer(broker, schema_registry, object_name, schema_key, schema_value, kafka_topic):
+def avro_producer(
+    broker, schema_registry, object_name, schema_key, schema_value, kafka_topic
+):
 
     # init producer using key & value [schema registry] integration
     producer = AvroProducer(
         producer_settings.producer_settings_avro(broker, schema_registry),
         default_key_schema=avro.loads(schema_key),
-        default_value_schema=avro.loads(schema_value)
+        default_value_schema=avro.loads(schema_value),
     )
 
     # get data to insert
@@ -33,9 +35,11 @@ def avro_producer(broker, schema_registry, object_name, schema_key, schema_value
             # to aid in debugging we provide the original object to the delivery callback.
             producer.produce(
                 topic=kafka_topic,
-                key={'user_id': record.user_id},
+                key={"user_id": record.user_id},
                 value=record.to_dict_events(),
-                callback=lambda err, msg, obj=record: delivery_reports.on_delivery_avro(err, msg, obj)
+                callback=lambda err, msg, obj=record: delivery_reports.on_delivery_avro(
+                    err, msg, obj
+                ),
             )
 
         except BufferError:
