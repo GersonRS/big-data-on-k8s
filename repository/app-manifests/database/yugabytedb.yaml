@@ -12,7 +12,7 @@ spec:
   project: default
   source:
     repoURL: 'https://charts.yugabyte.com'
-    targetRevision: 2.15.3
+    targetRevision: 2.16.0
     helm:
       values: |-
         preflight:
@@ -32,8 +32,8 @@ spec:
               cpu: 500m
               memory: 0.5Gi
         replicas:
-          master: 3
-          tserver: 3
+          master: 1
+          tserver: 1
     chart: yugabyte
   syncPolicy:
     automated:

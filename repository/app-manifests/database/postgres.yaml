@@ -12,13 +12,14 @@ spec:
   project: default
   source:
     repoURL: 'https://charts.bitnami.com/bitnami'
-    targetRevision: 12.1.0
+    targetRevision: 12.1.5
     helm:
       values: |-
         global:
           postgresql:
             auth:
               username: SDS8f23c7
+              database: airflow
               existingSecret: postgres-secrets
               secretKeys:
                 adminPasswordKey: postgres-password

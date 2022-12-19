@@ -12,11 +12,11 @@ spec:
   project: default
   source:
     repoURL: 'https://operator.min.io/'
-    targetRevision: 4.5.3
+    targetRevision: 4.5.5
     helm:
       values: |-
         operator:
-          replicaCount: 1
+          replicaCount: 2
     chart: operator
   syncPolicy:
     automated:
