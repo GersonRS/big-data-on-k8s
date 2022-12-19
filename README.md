@@ -64,7 +64,7 @@ helm install argocd argo/argo-cd --namespace cicd --version 5.8.5
 k patch svc argocd-server -n cicd -p '{"spec": {"type": "LoadBalancer"}}'
 
 # retrieve load balancer ip
-# load balancer = 192.168.0.200
+# load balancer = 10.97.59.137
 kubens cicd
 ARGOCD_LB=$(kubectl get services -l app.kubernetes.io/name=argocd-server,app.kubernetes.io/instance=argocd -o jsonpath="{.items[0].status.loadBalancer.ingress[0].ip}")
 
