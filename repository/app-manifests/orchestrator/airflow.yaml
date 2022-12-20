@@ -16,6 +16,7 @@ spec:
     helm:
       values: |-
         executor: "KubernetesExecutor"
+        webserverSecretKeySecretName: my-webserver-secret
         createUserJob:
           useHelmHooks: false
         migrateDatabaseJob:
@@ -24,14 +25,7 @@ spec:
           service: 
             type: LoadBalancer
         data:
-          metadataConnection:
-            user: gerson
-            pass: '12345678'
-            protocol: postgresql
-            host: postgres-postgresql.database.svc.cluster.local
-            port: 5432
-            db: potato
-            sslmode: disable
+          metadataSecretName: airflow-metadata-secret
         postgresql:
           enabled: false
         dags:

@@ -75,8 +75,8 @@ kafkacat -C -b $BROKER_IP -t src-app-rides-avro -s avro -r $SCHEMA_REGISTRY -o e
 # dockerize and push app to hub
 # https://hub.docker.com/
 docker build -f Dockerfile --tag ingestion-data-stores .
-docker tag ingestion-data-stores owshq/ingestion-data-stores:0.1
-docker push owshq/ingestion-data-stores:0.1
+docker tag ingestion-data-stores ingestion-data-stores:0.1
+docker push ingestion-data-stores:0.1
 
 # access docker image
 docker run -i -t ingestion-data-stores /bin/bash

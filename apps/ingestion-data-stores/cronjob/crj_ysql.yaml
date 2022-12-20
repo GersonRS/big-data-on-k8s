@@ -12,7 +12,7 @@ spec:
         spec:
           containers:
           - name: crj-ysql-ingestion
-            image: owshq/ingestion-data-stores:0.1
+            image: ingestion-data-stores:0.1
             envFrom:
             - secretRef:
                 name: cronjob-environment

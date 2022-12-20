@@ -11,7 +11,7 @@ spec:
         spec:
           containers:
           - name: crj-mssql-ingestion
-            image: owshq/ingestion-data-stores:0.1
+            image: ingestion-data-stores:0.1
             imagePullPolicy: IfNotPresent
             command: ["python3.9","cli.py","mssql"]
           restartPolicy: OnFailure

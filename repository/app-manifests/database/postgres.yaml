@@ -18,7 +18,7 @@ spec:
         global:
           postgresql:
             auth:
-              username: SDS8f23c7
+              username: sds8f23c7
               database: airflow
               existingSecret: postgres-secrets
               secretKeys:

@@ -32,8 +32,17 @@ spec:
               cpu: 500m
               memory: 0.5Gi
         replicas:
-          master: 1
-          tserver: 1
+          master: 2
+          tserver: 2
+        authCredentials:
+          ysql:
+            user: sds8f23c7
+            password: fca31691d2c8ee8ec00ffd25f4dc7e4e
+            database: airflow
+          ycql:
+            user: sds8f23c7
+            password: fca31691d2c8ee8ec00ffd25f4dc7e4e
+            keyspace: airflow
     chart: yugabyte
   syncPolicy:
     automated:

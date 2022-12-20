@@ -1,22 +1,27 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  # app name
   name: lenses
-  # deployed yaml
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
   namespace: cicd
 spec:
-  project: default
-  source:
-    repoURL: 'git@github.com:GersonRS/big-data-on-k8s.git'
-    path: repository/helm-charts/lenses
-    targetRevision: HEAD
-    helm:
-      valueFiles:
-        - values-development.yaml
   destination:
     server: 'https://kubernetes.default.svc'
     namespace: dataops
+  project: default
+  source:
+    repoURL: 'https://helm.repo.lenses.io'
+    targetRevision: 5.0.5
+    helm:
+      values: |-
+        lenses:
+          security:
+            defaultUser:
+              username: gerson
+              password: 12345678
+
+    chart: lenses
   syncPolicy:
     automated:
       prune: true
