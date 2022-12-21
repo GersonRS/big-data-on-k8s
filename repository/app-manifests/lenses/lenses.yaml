@@ -15,12 +15,8 @@ spec:
     targetRevision: 5.0.5
     helm:
       values: |-
-        lenses:
-          security:
-            defaultUser:
-              username: gerson
-              password: 12345678
-
+        service:
+          type: LoadBalancer
     chart: lenses
   syncPolicy:
     automated:
