@@ -32,8 +32,8 @@ spec:
               cpu: 500m
               memory: 0.5Gi
         replicas:
-          master: 2
-          tserver: 2
+          master: 1
+          tserver: 1
         authCredentials:
           ysql:
             user: sds8f23c7

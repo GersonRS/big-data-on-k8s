@@ -173,5 +173,5 @@ k apply -f crj-strimzi-events.yaml -n app
 
 
 
-LkzfamlAtWoGWVKR
-tYJ1YF3RDJRZL5OU1PpApV6RJPrBf0tB
+eFRui2tQOW87JMUZ
+15f9p3Zo1k1PIMZGHJoW5ghNoo2D4sTT
