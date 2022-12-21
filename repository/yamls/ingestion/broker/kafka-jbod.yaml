@@ -9,9 +9,9 @@ metadata:
 spec:
   kafka:
     # broker version
-    version: 3.2.3
+    version: 3.3.1
     # initial replicas
-    replicas: 3
+    replicas: 2
     # provision lbs
     listeners:
       - name: plain
@@ -26,21 +26,15 @@ spec:
         port: 9094
         type: loadbalancer
         tls: false
-    readinessProbe:
-      initialDelaySeconds: 15
-      timeoutSeconds: 5
-    livenessProbe:
-      initialDelaySeconds: 15
-      timeoutSeconds: 5
     config:
       # Report and UI for Cruise Control
       metric.reporters: "com.linkedin.kafka.cruisecontrol.metricsreporter.CruiseControlMetricsReporter"
-      offsets.topic.replication.factor: 3
-      transaction.state.log.replication.factor: 3
-      transaction.state.log.min.isr: 2
-      default.replication.factor: 3
-      min.insync.replicas: 2
-      inter.broker.protocol.version: "3.2"
+      offsets.topic.replication.factor: 2
+      transaction.state.log.replication.factor: 2
+      transaction.state.log.min.isr: 1
+      default.replication.factor: 2
+      min.insync.replicas: 1
+      inter.broker.protocol.version: "3.3"
     storage:
       type: jbod
       volumes:
@@ -65,7 +59,7 @@ spec:
           key: kafka-metrics-config.yml
   # zookeeper information
   zookeeper:
-    replicas: 3
+    replicas: 2
     storage:
         type: persistent-claim
         size: 10Gi
