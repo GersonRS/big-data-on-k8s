@@ -1,0 +1,39 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: lenses
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+  namespace: cicd
+spec:
+  destination:
+    server: "https://kubernetes.default.svc"
+    namespace: dataops
+  project: default
+  source:
+    repoURL: "https://provectus.github.io/kafka-ui"
+    targetRevision: 0.4.6
+    helm:
+      values: |-
+        service:
+          type: LoadBalancer
+        yamlApplicationConfig:
+          kafka:
+            clusters:
+              - name: local
+                bootstrapServers: edh-kafka-bootstrap.ingestion.svc.cluster.local:9091,edh-kafka-bootstrap.ingestion.svc.cluster.local:9092,edh-kafka-bootstrap.ingestion.svc.cluster.local:9093
+                zookeeper: edh-zookeeper-client.ingestion.svc.cluster.local:2181
+                schemaRegistry: http://schema-registry-cp-schema-registry.ingestion.svc.cluster.local:8081
+                metrics:
+                  port: 9997
+                  type: JMX
+          spring:
+            jmx:
+              enabled: true
+          auth:
+            type: disabled
+    chart: kafka-ui
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
