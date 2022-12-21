@@ -15,14 +15,24 @@ spec:
         port: 9093
         type: internal
         tls: true
+      - name: external
+        port: 9094
+        type: loadbalancer
+        tls: false
+    readinessProbe:
+      initialDelaySeconds: 15
+      timeoutSeconds: 5
+    livenessProbe:
+      initialDelaySeconds: 15
+      timeoutSeconds: 5
     config:
       # Report and UI for Cruise Control
       metric.reporters: "com.linkedin.kafka.cruisecontrol.metricsreporter.CruiseControlMetricsReporter"
       offsets.topic.replication.factor: 3
       transaction.state.log.replication.factor: 3
-      transaction.state.log.min.isr: 1
+      transaction.state.log.min.isr: 2
       default.replication.factor: 3
-      min.insync.replicas: 1
+      min.insync.replicas: 2
       inter.broker.protocol.version: "3.3"
     storage:
       type: ephemeral

@@ -1,0 +1,33 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: minio-operator
+  annotations:
+    argocd.argoproj.io/sync-wave: "3"
+  namespace: cicd
+spec:
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: deepstorage
+  project: default
+  source:
+    repoURL: 'https://charts.min.io/'
+    targetRevision: 5.0.3
+    helm:
+      values: |-
+        existingSecret: minio-secrets
+        replicas: 3
+        persistence:
+          size: 20Gi
+        service:
+          type: LoadBalancer
+        consoleService:
+          type: LoadBalancer
+        resources:
+          requests:
+            memory: 1Gi
+    chart: operator
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
