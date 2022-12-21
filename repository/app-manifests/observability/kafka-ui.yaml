@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: lenses
+  name: kafka-ui
   annotations:
     argocd.argoproj.io/sync-wave: "1"
   namespace: cicd
@@ -17,6 +17,7 @@ spec:
       values: |-
         service:
           type: LoadBalancer
+          port: 81
         yamlApplicationConfig:
           kafka:
             clusters:
@@ -32,6 +33,10 @@ spec:
               enabled: true
           auth:
             type: disabled
+          management:
+            health:
+              ldap:
+                enabled: false
     chart: kafka-ui
   syncPolicy:
     automated:
