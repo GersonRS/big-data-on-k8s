@@ -26,6 +26,12 @@ spec:
         port: 9094
         type: loadbalancer
         tls: false
+    readinessProbe:
+      initialDelaySeconds: 15
+      timeoutSeconds: 5
+    livenessProbe:
+      initialDelaySeconds: 15
+      timeoutSeconds: 5
     config:
       # Report and UI for Cruise Control
       metric.reporters: "com.linkedin.kafka.cruisecontrol.metricsreporter.CruiseControlMetricsReporter"
