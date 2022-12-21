@@ -11,7 +11,7 @@ spec:
     # broker version
     version: 3.3.1
     # initial replicas
-    replicas: 1
+    replicas: 3
     # provision lbs
     listeners:
       - name: plain
@@ -35,10 +35,10 @@ spec:
     config:
       # Report and UI for Cruise Control
       metric.reporters: "com.linkedin.kafka.cruisecontrol.metricsreporter.CruiseControlMetricsReporter"
-      offsets.topic.replication.factor: 1
-      transaction.state.log.replication.factor: 1
+      offsets.topic.replication.factor: 3
+      transaction.state.log.replication.factor: 3
       transaction.state.log.min.isr: 1
-      default.replication.factor: 1
+      default.replication.factor: 3
       min.insync.replicas: 1
       inter.broker.protocol.version: "3.3"
     storage:
@@ -65,7 +65,7 @@ spec:
           key: kafka-metrics-config.yml
   # zookeeper information
   zookeeper:
-    replicas: 1
+    replicas: 3
     storage:
         type: persistent-claim
         size: 10Gi
