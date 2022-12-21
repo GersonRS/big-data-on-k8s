@@ -52,11 +52,11 @@ spec:
     # -xms -xmx set as same as resources [limit]
     resources:
       requests:
+        memory: 256Mi
+        cpu: "250m"
+      limits:
         memory: 512Mi
         cpu: "500m"
-      limits:
-        memory: 1Gi
-        cpu: "1000m"
     metricsConfig:
       type: jmxPrometheusExporter
       valueFrom:
@@ -65,6 +65,12 @@ spec:
           key: kafka-metrics-config.yml
   # zookeeper information
   zookeeper:
+    livenessProbe:
+      initialDelaySeconds: 60
+      timeoutSeconds: 5
+    readinessProbe:
+      initialDelaySeconds: 60
+      timeoutSeconds: 5
     replicas: 3
     storage:
         type: persistent-claim
@@ -73,10 +79,10 @@ spec:
     resources:
       # requests and limits
       requests:
-        memory: 512Mi
+        memory: 256Mi
         cpu: "250m"
       limits:
-        memory: 1Gi
+        memory: 512Mi
         cpu: "500m"
     metricsConfig:
       type: jmxPrometheusExporter
