@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: ingestion-data-stores-python-app
-          image: owshq/ingestion-data-stores-python-app:0.1
+          image: gersonrs/ingestion-data-stores-python-app:0.1
           imagePullPolicy: Always
           ports:
             - containerPort: 5000

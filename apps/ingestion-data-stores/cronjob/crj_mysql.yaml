@@ -12,11 +12,8 @@ spec:
         spec:
           containers:
           - name: crj-mysql-ingestion
-            image: ingestion-data-stores:0.1
+            image: gersonrs/ingestion-data-stores:0.1
             imagePullPolicy: IfNotPresent
-            envFrom:
-            - secretRef:
-                name: cronjob-environment
             command: ["python3.9","cli.py","mysql"]
           restartPolicy: OnFailure
 

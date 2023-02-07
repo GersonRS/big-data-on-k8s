@@ -2,9 +2,8 @@ apiVersion: batch/v1
 kind: CronJob
 metadata:
   name: crj-minio-ingestion
-  namespace: app
 spec:
-  schedule: "0 0 */1 * *"
+  schedule: "*/1 * * * *"
   concurrencyPolicy: Forbid
   jobTemplate:
     spec:
@@ -12,11 +11,7 @@ spec:
         spec:
           containers:
           - name: crj-minio-ingestion
-            image: ingestion-data-stores:0.1
+            image: gersonrs/ingestion-data-stores:0.1
             imagePullPolicy: IfNotPresent
-            envFrom:
-            - secretRef:
-                name: cronjob-environment
             command: ["python3.9","cli.py","minio"]
           restartPolicy: OnFailure
-

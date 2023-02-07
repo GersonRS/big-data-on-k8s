@@ -2,7 +2,6 @@ apiVersion: batch/v1
 kind: CronJob
 metadata:
   name: crj-strimzi-events
-  namespace: app
 spec:
   schedule: "0 0 */1 * *"
   concurrencyPolicy: Forbid
@@ -12,11 +11,8 @@ spec:
         spec:
           containers:
           - name: crj-strimzi-events
-            image: ingestion-data-stores:0.1
+            image: gersonrs/ingestion-data-stores:0.1
             imagePullPolicy: IfNotPresent
-            envFrom:
-            - secretRef:
-                name: cronjob-environment
             command: ["/bin/sh", "-c"]
             args:
               - echo starting;

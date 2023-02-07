@@ -176,6 +176,7 @@ class MinioStorage(object):
             length=len(json_data),
             content_type="application/json",
         )
+        print("success")
 
     @staticmethod
     def write_all():

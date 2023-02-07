@@ -74,13 +74,13 @@ kafkacat -C -b $BROKER_IP -t src-app-rides-avro -s avro -r $SCHEMA_REGISTRY -o e
 ```sh
 # dockerize and push app to hub
 # https://hub.docker.com/
-docker build -f Dockerfile --tag ingestion-data-stores .
+docker build -f Dockerfile --tag gersonrs/ingestion-data-stores .
 docker tag ingestion-data-stores ingestion-data-stores:0.1
-docker push ingestion-data-stores:0.1
+docker push gersonrs/ingestion-data-stores:0.1
 
 # access docker image
-docker run -i -t ingestion-data-stores /bin/bash
-docker run ingestion-data-stores python3.9 cli.py
+docker run -i -t gersonrs/ingestion-data-stores /bin/bash
+docker run gersonrs/ingestion-data-stores python3.9 cli.py
 ```
 
 ### deploy app into k8s
@@ -89,7 +89,7 @@ docker run ingestion-data-stores python3.9 cli.py
 kubectx aks-owshq-dev
 
 # cron jobs deployment
-# /Users/luanmorenomaciel/BitBucket/big-data-on-k8s/apps/ingestion-data-stores/cronjob
+# /Users/luanmorenomaciel/BitBucket/big-data-on-k8s/apps/gersonrs/ingestion-data-stores/cronjob
 k apply -f crj_minio.yaml -n app
 k apply -f crj_mssql.yaml -n app
 k apply -f crj_mysql.yaml -n app

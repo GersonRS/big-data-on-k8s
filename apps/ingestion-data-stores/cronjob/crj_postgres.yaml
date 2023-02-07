@@ -1,4 +1,4 @@
-apiVersion: batch/v1
+apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
   name: crj-postgres-ingestion
@@ -12,12 +12,8 @@ spec:
         spec:
           containers:
           - name: crj-postgres-ingestion
-            image: ingestion-data-stores:0.1
+            image: owshq/ingestion-data-stores:0.1
             imagePullPolicy: IfNotPresent
-            envFrom:
-            - secretRef:
-                name: cronjob-environment
             command: ["python3.9","cli.py","postgres"]
           restartPolicy: OnFailure
-
 
